@@ -8,6 +8,10 @@ export const loginPost = async (payload) => {
   })
   return data
 }
+export const addOrganization = async (payload) => {
+  const { data } = await axiosInstance.post(`Organization`, payload)
+  return data
+}
 export const getOrganizationData = async () => {
   setAuthenticationToken(localStorage.getItem('token'))
   const { data } = await axiosInstance.get(`Organization?searchParam=`)

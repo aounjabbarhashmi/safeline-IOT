@@ -1,18 +1,14 @@
 /* eslint-disable react/prop-types */
-import { CButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react'
+import { CModal, CModalBody, CModalHeader, CModalTitle } from '@coreui/react'
 import React from 'react'
 export const GenericModal = ({ title, content, onClose, isOpen }) => {
   return (
-    <CModal
-      visible={isOpen}
-      onClose={onClose}
-      size="md" // Set the size (lg for large, sm for small, etc.)
-    >
+    <CModal visible={isOpen} onClose={onClose}>
       <CModalHeader closeButton>
         <CModalTitle>{title}</CModalTitle>
       </CModalHeader>
       <CModalBody>{content}</CModalBody>
-      <CModalFooter>
+      {/* <CModalFooter>
         <CButton
           color="primary"
           onClick={() => {
@@ -29,7 +25,7 @@ export const GenericModal = ({ title, content, onClose, isOpen }) => {
         >
           Close
         </CButton>
-      </CModalFooter>
+      </CModalFooter> */}
     </CModal>
   )
 }

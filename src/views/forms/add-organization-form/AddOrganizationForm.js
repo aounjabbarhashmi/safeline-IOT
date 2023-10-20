@@ -11,24 +11,27 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
-  cibMailchimp,
-  cil3d,
+
   cil4k,
-  cilActionUndo,
   cilBuilding,
   cilLibraryBuilding,
   cilLocationPin,
   cilPaperPlane,
   cilPaperclip,
   cilPhone,
-  cilTerminal,
 } from '@coreui/icons'
-const AddOrganizationForm = () => {
+import { useLoader } from 'src/global-context/LoaderContext'
+import { useNavigate } from 'react-router-dom'
+// eslint-disable-next-line react/prop-types
+const AddOrganizationForm = ({ closeModal, saveHandler }) => {
+  const { dispatch } = useLoader()
+  const navigate = useNavigate()
+  const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
   const [validated, setValidated] = useState(false)
   const [formData, setFormData] = useState({
     organizationName: '',
     organizationContact: '',
-    organizationEmail: '',
+    contactEmail: '',
     Address: '',
     city: '',
     street: '',
@@ -41,10 +44,21 @@ const AddOrganizationForm = () => {
       [name]: type === 'checkbox' ? checked : value,
     })
   }
+  const handleEmailChange = (e) => {
+    const { name, value, type, checked } = e.target
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    })
+    const inputEmail = e.target.value;
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    const isValid = emailRegex.test(inputEmail);
+
+    setValidated(isValid);
+  };
 
   const handleSubmit = (event) => {
     const form = event.currentTarget
-    const phoneNumber = formData.organizationContact
     event.preventDefault()
     if (form.checkValidity() === false) {
       event.stopPropagation()
@@ -54,8 +68,9 @@ const AddOrganizationForm = () => {
 
     // Handle form submission here
     if (form.checkValidity() === true) {
-      console.log('Form is valid, submit data:', formData)
-      event.preventDefault()
+      showLoader()
+      saveHandler(formData)
+      closeModal()
     }
   }
 
@@ -93,14 +108,13 @@ const AddOrganizationForm = () => {
             <CIcon icon={cilPhone} alt="Contact" />
           </CInputGroupText>
           <CFormInput
-            type="text"
+            type="number"
             name="organizationContact"
             value={formData.organizationContact}
             onChange={handleInputChange}
-            feedbackInvalid="Please enter a valid 11-digit phone number"
+            feedbackInvalid="Please enter a valid phone number"
             id="validationCustom02"
             required
-            pattern="[0-10]{11}" // Use a pattern to specify the format
           />
         </CInputGroup>
       </CCol>
@@ -113,9 +127,9 @@ const AddOrganizationForm = () => {
           </CInputGroupText>
           <CFormInput
             type="email"
-            name="organizationEmail"
-            value={formData.organizationEmail}
-            onChange={handleInputChange}
+            name="contactEmail"
+            value={formData.contactEmail}
+            onChange={handleEmailChange}
             aria-describedby="inputGroupPrependFeedback"
             feedbackInvalid="Organization Email is required"
             id="validationCustomorganizationEmail"
@@ -201,8 +215,8 @@ const AddOrganizationForm = () => {
       </CCol>
       {/* Submit Button */}
       <CCol xs={12}>
-        <CButton color="primary" type="submit">
-          Submit form
+        <CButton color="primary" className='float-end' type="submit">
+          Add Organization
         </CButton>
       </CCol>
     </CForm>
