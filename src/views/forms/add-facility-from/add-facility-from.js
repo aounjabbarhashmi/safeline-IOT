@@ -17,6 +17,7 @@ import {
   cilActionUndo,
   cilAirplay,
   cilBuilding,
+  cilEnvelopeClosed,
   cilLibraryBuilding,
   cilLocationPin,
   cilPaperPlane,
@@ -31,11 +32,17 @@ const AddFacilityFrom = () => {
     facilityName: '',
     facilityType: '',
     organizations: '',
-    Address: '',
+    timeZone:'',
+    currency:'',
+    siteManager:'',
+    contact:'',
+    contactEmail:'',
+    address: '',
     city: '',
     street: '',
-    postcode: '',
-    latitude:''
+    postCode: '',
+    latitude:'',
+    longitude:''
   })
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -78,7 +85,7 @@ const AddFacilityFrom = () => {
         </CInputGroupText>
         <CFormInput
           type="text"
-          name="facilityname"
+          name="facilityName"
           value={formData.facilityName}
           onChange={handleInputChange}
           feedbackInvalid="Facility Name is required"
@@ -89,16 +96,16 @@ const AddFacilityFrom = () => {
     </CCol>
     {/* Facility Type */}
     <CCol md={12}>
-     {/* </CInputGroup> */}
       {/* Form select*/}
+      <CFormLabel htmlFor="validationFacilityName">Facility Type*</CFormLabel>
       <CFormSelect
         aria-describedby="validationCustom04Feedback"
-        feedbackInvalid="Please select a valid state."
-        id="validationCustom04"
-        label="Facility Type"
+        feedbackInvalid="Please select a valid facility type."
+        id="validationFacilityType"
+        onChange={handleInputChange}
         required
       >
-        <option abled>Choose...</option>
+        <option >Choose...</option>
         <option>Lahore City</option>
         <optio>Karachi City</optio>
         <option>Murre City</option>
@@ -118,65 +125,166 @@ const AddFacilityFrom = () => {
           value={formData.organizations}
           onChange={handleInputChange}
           aria-describedby="inputGroupPrependFeedback"
-          feedbackInvalid="Organizations  is required"
+          feedbackInvalid="Facility Name is required"
           id="validationOrganizations"
           required
         />
       </CInputGroup>
     </CCol>
-    {/* Address */}
-    <CCol md={12}>
-      <CFormLabel htmlFor="validationCustomAddress">Address</CFormLabel>
-      <CInputGroup>
-        <CInputGroupText>
-         {/* <CIcon icon={cilLocationPin} alt="Address" />*/}
-        </CInputGroupText>
-        <CFormInput
-          type="text"
-          name="Address"
-          value={formData.Address}
-          onChange={handleInputChange}
-          aria-describedby="validationCustom03Feedback"
-          feedbackInvalid="Address is required."
-          id="validationCustom03"
-          required
-        />
-      </CInputGroup>
+        {/* Time zone*/}
+       {/*} <CFormLabel htmlFor="validationTimeZone">Time Zone*</CFormLabel>*/}
+        <CCol md={6}>
+      <CFormSelect
+      name='timeZone'
+      value={formData.timeZone}
+      onChange={handleInputChange}
+        aria-describedby="validationCustom04Feedback"
+        feedbackInvalid="Please select a valid time zone."
+        id="validationTimeZone"
+        label="Time Zone*"
+        required
+      >
+        <option ></option>
+        <option>Arial bl</option>
+        <option>Blue re</option>
+        <option>Green re</option>
+        <option>Red spr</option>
+      </CFormSelect>
     </CCol>
-    {/* City */}
+
+        {/*Currency */}
+       {/* <CFormLabel htmlFor="validationCurrency">Currency*</CFormLabel>*/}
+        <CCol md={6}>
+      <CFormSelect
+      name='currency'
+      value={formData.currency}
+      onChange={handleInputChange}
+        aria-describedby="validationCurrency"
+        feedbackInvalid="Please select a valid currency."
+        id="validationCurrency"
+        label="Currency*"
+        required
+      >
+        <option></option>
+        <option>Arial bl</option>
+        <option>Blue re</option>
+        <option>Green re</option>
+        <option>Red spr</option>
+      </CFormSelect>
+    </CCol>
+        {/* Site manager */}
     <CCol md={6}>
-      <CFormLabel htmlFor="validationCustomCity">City</CFormLabel>
+      <CFormLabel htmlFor="validationCustomCity">Site Manager</CFormLabel>
       <CInputGroup>
         <CInputGroupText>
-          <CIcon icon={cilLibraryBuilding} alt="City" />
+          <CIcon icon={cilLibraryBuilding} alt="sitemanager" />
         </CInputGroupText>
         <CFormInput
           type="text"
-          name="city"
-          value={formData.city}
+          name="siteManager"
+          value={formData.siteManager}
           onChange={handleInputChange}
-          aria-describedby="validationCustom04Feedback"
-          feedbackInvalid="City is required."
-          id="validationCustom04"
+          aria-describedby="validationSiteManager"
+          feedbackInvalid="Site Manager required."
+          id="validationSiteManager"
           required
         ></CFormInput>
       </CInputGroup>
     </CCol>
-    {/* Street */}
+    {/* Contact */}
     <CCol md={6}>
-      <CFormLabel htmlFor="validationCustomStreet">Street</CFormLabel>
+      <CFormLabel htmlFor="validationCustomStreet">Contact Number*</CFormLabel>
       <CInputGroup>
         <CInputGroupText>
-          <CIcon icon={cil4k} alt="Street" />
+          <CIcon icon={cilPhone} alt="Contact" />
+        </CInputGroupText>
+        <CFormInput
+          type="phone number"
+          name="contact"
+          placeholder='123456'
+          value={formData.contact}
+          onChange={handleInputChange}
+          aria-describedby="validationContactNumber"
+          feedbackInvalid="Phone Number is required."
+          id="validationContactNumber"
+          required
+        />
+      </CInputGroup>
+    </CCol>
+    
+    {/*Contact Email*/}
+    <CCol md={12}>
+      <CFormLabel htmlFor="validationCustomAddress">Contact Email</CFormLabel>
+      <CInputGroup>
+        <CInputGroupText>
+          <CIcon icon={cilEnvelopeClosed} alt="Contactemail" />
+        </CInputGroupText>
+        <CFormInput
+          type="email"
+          name="contactEmail"
+          value={formData.contactEmail}
+          onChange={handleInputChange}
+          aria-describedby="validationContactEmail"
+          feedbackInvalid="Contact Email is required."
+          id="validationContactEmail"
+          required
+        />
+      </CInputGroup>
+    </CCol>
+
+    {/* Address */}
+    <CCol md={12}>
+      <CFormLabel htmlFor="validationCustomAddress">Address*</CFormLabel>
+      <CInputGroup>
+        <CInputGroupText>
+         <CIcon icon={cilBuilding} alt="Address" />
+        </CInputGroupText>
+        <CFormInput
+          type="text"
+          name="address"
+          value={formData.address}
+          onChange={handleInputChange}
+          aria-describedby="validationCustom03Feedback"
+          feedbackInvalid="Address is required."
+          id="validationAddress"
+          required
+        />
+      </CInputGroup>
+    </CCol>
+    {/* Street*/}
+    <CCol md={6}>
+      <CFormLabel htmlFor="validationCustomCity">Street*</CFormLabel>
+      <CInputGroup>
+        <CInputGroupText>
+          <CIcon icon={cilLibraryBuilding} alt="Street" />
         </CInputGroupText>
         <CFormInput
           type="text"
           name="street"
           value={formData.street}
           onChange={handleInputChange}
-          aria-describedby="validationCustom05Feedback"
+          aria-describedby="validationCustom04Feedback"
           feedbackInvalid="Street is required."
-          id="validationCustom05"
+          id="validationStreet"
+          required
+        ></CFormInput>
+      </CInputGroup>
+    </CCol>
+    {/* City */}
+    <CCol md={6}>
+      <CFormLabel htmlFor="validationCustomStreet">City*</CFormLabel>
+      <CInputGroup>
+        <CInputGroupText>
+         <CIcon icon={cil4k} alt="City" /> 
+        </CInputGroupText>
+        <CFormInput
+          type="text"
+          name="city"
+          value={formData.city}
+          onChange={handleInputChange}
+          aria-describedby="validationCustom05Feedback"
+          feedbackInvalid="City is required."
+          id="validationCity"
           required
         />
       </CInputGroup>
@@ -186,39 +294,62 @@ const AddFacilityFrom = () => {
       <CFormLabel htmlFor="validationCustomPostcode">Postcode</CFormLabel>
       <CInputGroup>
         <CInputGroupText>
-          <CIcon icon={cilPaperclip} alt="Postcode" />
+         {/* <CIcon icon={cilPaperclip} alt="Postcode" />*/}
         </CInputGroupText>
         <CFormInput
-          type="text"
-          name="postcode"
-          value={formData.postcode}
+          type="number"
+          name="postCode"
+          value={formData.postCode}
           onChange={handleInputChange}
           aria-describedby="validationCustom05Feedback"
           feedbackInvalid="Postcode is required"
-          id="validationCustom05"
+          id="validationPostCode"
           required
         />
       </CInputGroup>
     </CCol>
     {/* latitude */}
     <CCol md={4}>
-      <CFormLabel htmlFor="validationCustomPostcode">latitude</CFormLabel>
+      <CFormLabel htmlFor="validationCustomPostcode">Latitude*</CFormLabel>
       <CInputGroup>
         <CInputGroupText>
-          <CIcon icon={cilPaperclip} alt="latitude" />
+         {/* <CIcon icon={cilPaperclip} alt="latitude" /> */}
         </CInputGroupText>
         <CFormInput
-          type="text"
+          type="number"
           name="latitude"
           value={formData.latitude}
           onChange={handleInputChange}
           aria-describedby="validationCustom05Feedback"
           feedbackInvalid="latitude is required"
-          id="validationCustom05"
+          id="validationLatitude"
           required
         />
       </CInputGroup>
     </CCol>
+    {/*Longitude*/}
+    <CCol md={4}>
+      <CFormLabel htmlFor="validationCustomPostcode">Longitude*</CFormLabel>
+      <CInputGroup>
+        <CInputGroupText>
+         {/* <CIcon icon={cilPaperclip} alt="longitude" />*/}
+        </CInputGroupText>
+        <CFormInput
+          type="number"
+          name="longitude"
+          value={formData.longitude}
+          onChange={handleInputChange}
+          aria-describedby="validationCustom05Feedback"
+          feedbackInvalid="longitude is required"
+          id="validationLongitude"
+          required
+        />
+      </CInputGroup>
+    </CCol>
+   
+
+
+
     {/* Submit Button */}
     <CCol xs={12}>
       <CButton color="primary" type="submit">
