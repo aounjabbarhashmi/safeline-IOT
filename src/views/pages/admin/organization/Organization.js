@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { useMutation } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import { useLoader } from 'src/global-context/LoaderContext'
-import { getOrganizationData } from 'src/hooks/useAuth'
+import { CButton, CCard, CCol, CRow } from '@coreui/react'
+import React, { useState } from 'react'
+import { GenericModal } from 'src/components/modal/GenericModal'
 import useDataStore from 'src/store/state'
-import useStore from 'src/store/state'
+import Modals from 'src/views/notifications/modals/Modals'
 import GenericTable from 'src/views/table/GenericTable'
+import Facilities from '../facilities/Facilities'
 const columns = [
   { key: 'id', label: 'ID' },
   { key: 'organizationName', label: 'Organization Name' },
@@ -15,38 +14,40 @@ const columns = [
   { key: 'street', label: 'Street' },
   { key: 'city', label: 'City' },
   { key: 'postcode', label: 'Postcode' },
-  // Add more columns as needed
 ]
 const Organization = () => {
-  // const [ setOrganizationData] = useState([])
-  // const organizationData = useStore((state) => state.organizationData)
   const data = useDataStore((state) => state.data)
-  const { dispatch } = useLoader()
-  const navigate = useNavigate()
-  const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
-  const hideLoader = () => dispatch({ type: 'HIDE_LOADER' })
-  const { mutate: getOrganization } = useMutation(getOrganizationData)
-  function organizationDataFetch() {
-    // showLoader()
-    getOrganization('', {
-      onSuccess: (data) => {
-        hideLoader()
-        // setOrganizationData(data)
-      },
-      onError: (error) => {
-        if (error.code === 'ERR_BAD_REQUEST') {
-          localStorage.removeItem('token')
-          navigate('/login')
-        }
-        hideLoader()
-      },
-    })
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const openModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
   }
   return (
-    <div>
-      <h1>Generic Table Example</h1>
-      <GenericTable columns={columns} data={data[0]} />
-    </div>
+    <>
+      <GenericModal
+        title="Add Organization"
+        content={<Facilities />}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+      />
+      <CCard className="p-4">
+        <CRow>
+          <CCol>
+            <h3 className="pb-2">Organizations</h3>
+          </CCol>
+          <CCol>
+            <CButton color="primary" className="float-end" onClick={openModal}>
+              Add Organization
+            </CButton>
+          </CCol>
+        </CRow>
+        <GenericTable columns={columns} data={data[0]} />
+      </CCard>
+    </>
   )
 }
 
