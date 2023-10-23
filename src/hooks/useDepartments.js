@@ -16,3 +16,7 @@ export const getAllDepartmentsData = async () => {
 export function useAllDepartmentsData() {
   return useQuery(['repos'], getAllDepartmentsData)
 }
+export const addDepartment = async (payload) => {
+  const { data } = await axiosInstance.post(`Department/CreateDepartment`, payload)
+  return data
+}

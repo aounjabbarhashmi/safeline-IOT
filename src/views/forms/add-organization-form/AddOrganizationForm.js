@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import {
   CButton,
   CCol,
@@ -11,7 +12,6 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
-
   cil4k,
   cilBuilding,
   cilLibraryBuilding,
@@ -23,7 +23,7 @@ import {
 import { useLoader } from 'src/global-context/LoaderContext'
 import { useNavigate } from 'react-router-dom'
 // eslint-disable-next-line react/prop-types
-const AddOrganizationForm = ({ closeModal, saveHandler }) => {
+const AddOrganizationForm = ({ closeModal, saveHandler, data }) => {
   const { dispatch } = useLoader()
   const navigate = useNavigate()
   const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
@@ -37,6 +37,19 @@ const AddOrganizationForm = ({ closeModal, saveHandler }) => {
     street: '',
     postcode: '',
   })
+  useEffect(() => {
+    if (data) {
+      setFormData(() => ({
+        organizationName: data.organizationName,
+        organizationContact: data.organizationContact,
+        contactEmail: data.contactEmail,
+        Address: data.address,
+        city: data.city,
+        street: data.street,
+        postcode: data.postcode,
+      }))
+    }
+  }, [data])
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
     setFormData({
@@ -50,12 +63,12 @@ const AddOrganizationForm = ({ closeModal, saveHandler }) => {
       ...formData,
       [name]: type === 'checkbox' ? checked : value,
     })
-    const inputEmail = e.target.value;
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    const isValid = emailRegex.test(inputEmail);
+    const inputEmail = e.target.value
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+    const isValid = emailRegex.test(inputEmail)
 
-    setValidated(isValid);
-  };
+    setValidated(isValid)
+  }
 
   const handleSubmit = (event) => {
     const form = event.currentTarget
@@ -215,12 +228,29 @@ const AddOrganizationForm = ({ closeModal, saveHandler }) => {
       </CCol>
       {/* Submit Button */}
       <CCol xs={12}>
-        <CButton color="primary" className='float-end' type="submit">
+        <CButton color="primary" className="float-end" type="submit">
           Add Organization
         </CButton>
       </CCol>
     </CForm>
   )
+}
+AddOrganizationForm.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  saveHandler: PropTypes.func.isRequired,
+  data: PropTypes.oneOfType([
+    PropTypes.array, // editdata can be an array
+    PropTypes.shape({
+      // Or an object
+      organizationName: PropTypes.string,
+      organizationContact: PropTypes.string,
+      contactEmail: PropTypes.string,
+      Address: PropTypes.string,
+      city: PropTypes.string,
+      street: PropTypes.string,
+      postcode: PropTypes.string,
+    }),
+  ]),
 }
 
 export default AddOrganizationForm

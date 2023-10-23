@@ -1,9 +1,6 @@
 import React from 'react'
 const OrganizationSensor = () => {
-  return <div>
-      
-  </div>
+  return <div>OrganizationSensor</div>
 }
 
 export default OrganizationSensor
- 

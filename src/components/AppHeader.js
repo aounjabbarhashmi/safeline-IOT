@@ -40,6 +40,7 @@ const AppHeader = () => {
     setSelectedFacilityId('Select Facility')
     setSelectedDepartmentId('Select Department')
     const selectedId = event.target.value
+    localStorage.setItem('OrganizationId', selectedId)
     setSelectedOrganizationId(selectedId)
     facilitiesDataFetch(selectedId)
   }

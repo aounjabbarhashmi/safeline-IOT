@@ -10,12 +10,11 @@ import {
   CTableRow,
 } from '@coreui/react'
 import { CDropdown, CDropdownItem, CDropdownToggle } from '@coreui/react'
-// import { CIcon } from '@coreui/icons-react' // Import the icon component
-import './GenericTable.css' // Import your custom CSS file
+import './GenericTable.css'
 import CIcon from '@coreui/icons-react'
 import { cilPencil, cilSettings, cilTrash } from '@coreui/icons'
 
-const GenericTable = ({ columns = [], data = [] }) => {
+const GenericTable = ({ columns = [], data = [], openEditModal }) => {
   return (
     <div className="table-responsive-x">
       <CTable hover className="custom-table">
@@ -39,7 +38,7 @@ const GenericTable = ({ columns = [], data = [] }) => {
                     <CIcon icon={cilSettings} />
                   </CDropdownToggle>
                   <CDropdownMenu>
-                    <CDropdownItem>
+                    <CDropdownItem onClick={() => openEditModal(item)}>
                       <CIcon icon={cilPencil} className="me-2" />
                       Edit
                     </CDropdownItem>
