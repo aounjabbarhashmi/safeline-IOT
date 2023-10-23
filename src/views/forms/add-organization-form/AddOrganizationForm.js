@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { useState } from 'react'
 import {
   CButton,
@@ -11,7 +10,6 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
-
   cil4k,
   cilBuilding,
   cilLibraryBuilding,
@@ -50,12 +48,12 @@ const AddOrganizationForm = ({ closeModal, saveHandler }) => {
       ...formData,
       [name]: type === 'checkbox' ? checked : value,
     })
-    const inputEmail = e.target.value;
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    const isValid = emailRegex.test(inputEmail);
+    const inputEmail = e.target.value
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+    const isValid = emailRegex.test(inputEmail)
 
-    setValidated(isValid);
-  };
+    setValidated(isValid)
+  }
 
   const handleSubmit = (event) => {
     const form = event.currentTarget
@@ -215,7 +213,7 @@ const AddOrganizationForm = ({ closeModal, saveHandler }) => {
       </CCol>
       {/* Submit Button */}
       <CCol xs={12}>
-        <CButton color="primary" className='float-end' type="submit">
+        <CButton color="primary" className="float-end" type="submit">
           Add Organization
         </CButton>
       </CCol>

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 // GenericTable.js
-import React from 'react'
+import React, { useState } from 'react'
 import {
   CDropdownMenu,
   CTable,
@@ -14,10 +14,27 @@ import { CDropdown, CDropdownItem, CDropdownToggle } from '@coreui/react'
 import './GenericTable.css' // Import your custom CSS file
 import CIcon from '@coreui/icons-react'
 import { cilPencil, cilSettings, cilTrash } from '@coreui/icons'
+import { DeleteModal } from 'src/components/modal/DeleteModal'
 
-const GenericTable = ({ columns = [], data = [] }) => {
+const GenericTable = ({ columns = [], data = [], deleteOrg }) => {
+  const [deleteOrganizationId, setDeleteOrganizationId] = useState('')
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true)
+  }
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false)
+  }
   return (
     <div className="table-responsive-x">
+      <DeleteModal
+        title="Delete"
+        content={''}
+        deleteOrg={deleteOrg}
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        id={deleteOrganizationId}
+      />
       <CTable hover className="custom-table">
         <CTableHead>
           <CTableRow>
@@ -43,7 +60,12 @@ const GenericTable = ({ columns = [], data = [] }) => {
                       <CIcon icon={cilPencil} className="me-2" />
                       Edit
                     </CDropdownItem>
-                    <CDropdownItem>
+                    <CDropdownItem
+                      onClick={() => {
+                        setDeleteOrganizationId(item.id)
+                        openDeleteModal()
+                      }}
+                    >
                       <CIcon icon={cilTrash} className="me-2" />
                       Delete
                     </CDropdownItem>
