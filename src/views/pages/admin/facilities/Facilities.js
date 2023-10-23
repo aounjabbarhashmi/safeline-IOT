@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { GenericModal } from 'src/components/modal/GenericModal'
 import { useLoader } from 'src/global-context/LoaderContext'
 import { useAllFacilitiesData } from 'src/hooks/useFacilities'
+import AddFacilityFrom from 'src/views/forms/add-facility-from/add-facility-from'
 import GenericTable from 'src/views/table/GenericTable'
 const columns = [
   { key: 'systemName', label: 'System Name' },
@@ -40,7 +41,7 @@ const Facilities = () => {
     <>
       <GenericModal
         title="Add Facility"
-        content="This is the modal content."
+        content={<AddFacilityFrom />}
         isOpen={isModalOpen}
         onClose={closeModal}
       />
