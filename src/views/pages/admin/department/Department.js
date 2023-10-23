@@ -2,6 +2,7 @@
 import { CButton, CCard, CCol, CRow } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import GlobalLoader from 'src/components/global-loader/GlobalLoader'
 import { GenericModal } from 'src/components/modal/GenericModal'
 import { useLoader } from 'src/global-context/LoaderContext'
 import { useAllDepartmentsData } from 'src/hooks/useDepartments'
@@ -53,7 +54,7 @@ const Department = () => {
             </CButton>
           </CCol>
         </CRow>
-        <GenericTable columns={columns} data={data} />
+        {data ? <GenericTable columns={columns} data={data} /> : <GlobalLoader />}
       </CCard>
     </>
   )

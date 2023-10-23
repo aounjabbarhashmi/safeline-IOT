@@ -41,6 +41,7 @@ const Login = () => {
     login(payload, {
       onSuccess: (data) => {
         localStorage.setItem('token', data.token)
+        localStorage.setItem('roles', data?.roles[0])
         navigate('/dashboard')
       },
       onError: (error) => {
