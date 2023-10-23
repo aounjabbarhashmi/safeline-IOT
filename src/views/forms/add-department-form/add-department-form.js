@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import {
   CButton,
   CCol,
@@ -25,14 +26,19 @@ import {
   cilPhone,
   cilTerminal,
 } from '@coreui/icons'
+import { useLoader } from 'src/global-context/LoaderContext'
 
-const AddDepartmentForm = () => {
-    const [validated, setValidated] = useState(false)
+const AddDepartmentForm = ({ closeModal, saveHandler }) => {
+  const { dispatch } = useLoader()
+  const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
+  const [validated, setValidated] = useState(false)
   const [formData, setFormData] = useState({
-    departmentName: '',
-    departmentEmail: '',
-    description:'',
-    facility:''
+    name: '',
+    contactEmail: '',
+    description: '',
+    facility: '',
+    organizationId: 33,
+    systemId: 31,
   })
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -54,107 +60,111 @@ const AddDepartmentForm = () => {
 
     // Handle form submission here
     if (form.checkValidity() === true) {
+      showLoader()
       console.log('Form is valid, submit data:', formData)
+      saveHandler(formData)
       event.preventDefault()
+      closeModal()
     }
   }
 
   return (
     <CForm
-    className="row g-3 needs-validation"
-    noValidate
-    validated={validated}
-    onSubmit={handleSubmit}
-  >
-    {/* Department Name */}
-    <CCol md={12}>
-      <CFormLabel htmlFor="validationDepartmentName">Department Name*</CFormLabel>
-      <CInputGroup>
-        <CInputGroupText>
-          <CIcon icon={cilBuilding} alt="Name" />
-        </CInputGroupText>
-        <CFormInput
-          type="text"
-          name="departmentName"
-          value={formData.departmentName}
-          onChange={handleInputChange}
-          feedbackInvalid="Department Name is required"
-          id="validationDepartmentName"
-          required
-        />
-      </CInputGroup>
-    </CCol>
-    
-    {/*Department Email */}
-    <CCol md={12}>
-      <CFormLabel htmlFor="validationDepartmentEmail">Department Email*</CFormLabel>
-      <CInputGroup>
-        <CInputGroupText>
-          <CIcon icon={cilEnvelopeClosed} alt="Departmentemail" />
-        </CInputGroupText>
-        <CFormInput
-          type="email"
-          name="departmentEmail"
-          value={formData.departmentEmail}
-          onChange={handleInputChange}
-          aria-describedby="validationDepartmentEmail"
-          feedbackInvalid="Department Email is required."
-          id="validationDepartmentEmail"
-          required
-        />
-      </CInputGroup>
-    </CCol>
-    {/*Description*/}
-   <CCol md={12}>
-      <CFormLabel htmlFor="description">Description*</CFormLabel>
-      <CInputGroup>
-        <CInputGroupText>
-          <CIcon icon={cil4k} alt="description" />
-        </CInputGroupText>
-        <CFormInput
-          type="text"
-          name="description"
-          value={formData.description}
-          onChange={handleInputChange}
-          feedbackInvalid="Description is required"
-          id="validationDescription"
-          required
-        />
-      </CInputGroup>
-    </CCol>
-    {/*Active*/}
-    <cCol md={12}>
-    <CFormLabel htmlFor="validationFacilityName">Active</CFormLabel>
-    <CFormCheck id="flexCheckDefault" label=" "/>
-    </cCol>
- {/* Facility */}
- <CCol md={12}>
-      <CFormLabel htmlFor="facility">Facility*</CFormLabel>
-      <CInputGroup>
-        <CInputGroupText>
-       {/*}   <CIcon icon={cil3d} alt="f" /> */}
-        </CInputGroupText>
-        <CFormInput
-          type="text"
-          name="facility"
-          value={formData.facility}
-          onChange={handleInputChange}
-          feedbackInvalid="Facility is required"
-          id="validationFacility"
-          required
-        />
-      </CInputGroup>
-    </CCol>
-   
+      className="row g-3 needs-validation"
+      noValidate
+      validated={validated}
+      onSubmit={handleSubmit}
+    >
+      {/* Department Name */}
+      <CCol md={12}>
+        <CFormLabel htmlFor="validationDepartmentName">Department Name*</CFormLabel>
+        <CInputGroup>
+          <CInputGroupText>
+            <CIcon icon={cilBuilding} alt="Name" />
+          </CInputGroupText>
+          <CFormInput
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            feedbackInvalid="Department Name is required"
+            id="validationDepartmentName"
+            required
+          />
+        </CInputGroup>
+      </CCol>
+
+      {/*Department Email */}
+      <CCol md={12}>
+        <CFormLabel htmlFor="validationDepartmentEmail">Department Email*</CFormLabel>
+        <CInputGroup>
+          <CInputGroupText>
+            <CIcon icon={cilEnvelopeClosed} alt="Departmentemail" />
+          </CInputGroupText>
+          <CFormInput
+            type="email"
+            name="contactEmail"
+            value={formData.contactEmail}
+            onChange={handleInputChange}
+            aria-describedby="validationDepartmentEmail"
+            feedbackInvalid="Department Email is required."
+            id="validationDepartmentEmail"
+            required
+          />
+        </CInputGroup>
+      </CCol>
+      {/*Description*/}
+      <CCol md={12}>
+        <CFormLabel htmlFor="description">Description*</CFormLabel>
+        <CInputGroup>
+          <CInputGroupText>
+            <CIcon icon={cil4k} alt="description" />
+          </CInputGroupText>
+          <CFormInput
+            type="text"
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            feedbackInvalid="Description is required"
+            id="validationDescription"
+            required
+          />
+        </CInputGroup>
+      </CCol>
+      {/*Active*/}
+      <CCol md={12}>
+        <CFormLabel htmlFor="validationFacilityName">Active</CFormLabel>
+        <CFormCheck id="flexCheckDefault" label=" " />
+      </CCol>
+      {/* Facility */}
+      <CCol md={12}>
+        <CFormLabel htmlFor="facility">Facility*</CFormLabel>
+        <CInputGroup>
+          <CInputGroupText>{/*}   <CIcon icon={cil3d} alt="f" /> */}</CInputGroupText>
+          <CFormInput
+            type="text"
+            name="facility"
+            value={formData.facility}
+            onChange={handleInputChange}
+            feedbackInvalid="Facility is required"
+            id="validationFacility"
+            required
+          />
+        </CInputGroup>
+      </CCol>
 
       {/* Submit Button */}
       <CCol xs={12}>
-      <CButton color="primary" type="submit">
-        Submit form
-      </CButton>
-    </CCol>
-  </CForm>
+        <CButton color="primary" type="submit">
+          Submit form
+        </CButton>
+      </CCol>
+    </CForm>
   )
+}
+AddDepartmentForm.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  saveHandler: PropTypes.func.isRequired,
 }
 
 export default AddDepartmentForm

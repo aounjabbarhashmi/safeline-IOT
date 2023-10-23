@@ -10,13 +10,12 @@ import {
   CTableRow,
 } from '@coreui/react'
 import { CDropdown, CDropdownItem, CDropdownToggle } from '@coreui/react'
-// import { CIcon } from '@coreui/icons-react' // Import the icon component
-import './GenericTable.css' // Import your custom CSS file
+import './GenericTable.css'
 import CIcon from '@coreui/icons-react'
 import { cilPencil, cilSettings, cilTrash } from '@coreui/icons'
 import { DeleteModal } from 'src/components/modal/DeleteModal'
 
-const GenericTable = ({ columns = [], data = [], deleteOrg }) => {
+const GenericTable = ({ columns = [], data = [], deleteOrg, openEditModal }) => {
   const renderCell = (item, key) => {
     const keys = key.split('.')
     return keys.reduce((acc, currentKey) => acc?.[currentKey], item)
@@ -63,7 +62,7 @@ const GenericTable = ({ columns = [], data = [], deleteOrg }) => {
                       <CIcon icon={cilSettings} />
                     </CDropdownToggle>
                     <CDropdownMenu>
-                      <CDropdownItem>
+                      <CDropdownItem onClick={() => openEditModal(item)}>
                         <CIcon icon={cilPencil} className="me-2" />
                         Edit
                       </CDropdownItem>

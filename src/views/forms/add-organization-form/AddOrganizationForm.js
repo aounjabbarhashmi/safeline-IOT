@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+/* eslint-disable prettier/prettier */
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import {
   CButton,
   CCol,
@@ -21,7 +23,7 @@ import {
 import { useLoader } from 'src/global-context/LoaderContext'
 import { useNavigate } from 'react-router-dom'
 // eslint-disable-next-line react/prop-types
-const AddOrganizationForm = ({ closeModal, saveHandler }) => {
+const AddOrganizationForm = ({ closeModal, saveHandler, data }) => {
   const { dispatch } = useLoader()
   const navigate = useNavigate()
   const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
@@ -35,6 +37,19 @@ const AddOrganizationForm = ({ closeModal, saveHandler }) => {
     street: '',
     postcode: '',
   })
+  useEffect(() => {
+    if (data) {
+      setFormData(() => ({
+        organizationName: data.organizationName,
+        organizationContact: data.organizationContact,
+        contactEmail: data.contactEmail,
+        Address: data.address,
+        city: data.city,
+        street: data.street,
+        postcode: data.postcode,
+      }))
+    }
+  }, [data])
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
     setFormData({
@@ -219,6 +234,23 @@ const AddOrganizationForm = ({ closeModal, saveHandler }) => {
       </CCol>
     </CForm>
   )
+}
+AddOrganizationForm.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  saveHandler: PropTypes.func.isRequired,
+  data: PropTypes.oneOfType([
+    PropTypes.array, // editdata can be an array
+    PropTypes.shape({
+      // Or an object
+      organizationName: PropTypes.string,
+      organizationContact: PropTypes.string,
+      contactEmail: PropTypes.string,
+      Address: PropTypes.string,
+      city: PropTypes.string,
+      street: PropTypes.string,
+      postcode: PropTypes.string,
+    }),
+  ]),
 }
 
 export default AddOrganizationForm

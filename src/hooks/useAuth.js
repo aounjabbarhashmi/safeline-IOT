@@ -25,6 +25,11 @@ export const getFacilitiesData = async (id) => {
   )
   return data
 }
+export const EditOrganization = async (payload) => {
+  setAuthenticationToken(localStorage.getItem('token'))
+  const { data } = await axiosInstance.patch(`Organization/${payload.editData.id}`, payload.handler)
+  return data
+}
 
 export const getDepartmentsData = async (id) => {
   setAuthenticationToken(localStorage.getItem('token'))
