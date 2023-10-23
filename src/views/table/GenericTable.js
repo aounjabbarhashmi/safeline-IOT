@@ -17,6 +17,10 @@ import { cilPencil, cilSettings, cilTrash } from '@coreui/icons'
 import { DeleteModal } from 'src/components/modal/DeleteModal'
 
 const GenericTable = ({ columns = [], data = [], deleteOrg }) => {
+  const renderCell = (item, key) => {
+    const keys = key.split('.')
+    return keys.reduce((acc, currentKey) => acc?.[currentKey], item)
+  }
   const [deleteOrganizationId, setDeleteOrganizationId] = useState('')
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const openDeleteModal = () => {
@@ -45,35 +49,38 @@ const GenericTable = ({ columns = [], data = [], deleteOrg }) => {
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {data.map((item, index) => (
-            <CTableRow key={index}>
-              {columns.map((column) => (
-                <td key={column.key}>{item[column.key]}</td>
-              ))}
-              <td key="actions">
-                <CDropdown>
-                  <CDropdownToggle color="secondary">
-                    <CIcon icon={cilSettings} />
-                  </CDropdownToggle>
-                  <CDropdownMenu>
-                    <CDropdownItem>
-                      <CIcon icon={cilPencil} className="me-2" />
-                      Edit
-                    </CDropdownItem>
-                    <CDropdownItem
-                      onClick={() => {
-                        setDeleteOrganizationId(item.id)
-                        openDeleteModal()
-                      }}
-                    >
-                      <CIcon icon={cilTrash} className="me-2" />
-                      Delete
-                    </CDropdownItem>
-                  </CDropdownMenu>
-                </CDropdown>
-              </td>
-            </CTableRow>
-          ))}
+          {data?.length > 0 &&
+            data?.map((item, index) => (
+              <CTableRow key={index}>
+                {columns.map((column) => (
+                  <td key={column.key}>
+                    {column.key.includes('.') ? renderCell(item, column.key) : item[column.key]}
+                  </td>
+                ))}
+                <td key="actions">
+                  <CDropdown>
+                    <CDropdownToggle color="secondary">
+                      <CIcon icon={cilSettings} />
+                    </CDropdownToggle>
+                    <CDropdownMenu>
+                      <CDropdownItem
+                        onClick={() => {
+                          setDeleteOrganizationId(item.id)
+                          openDeleteModal()
+                        }}
+                      >
+                        <CIcon icon={cilPencil} className="me-2" />
+                        Edit
+                      </CDropdownItem>
+                      <CDropdownItem>
+                        <CIcon icon={cilTrash} className="me-2" />
+                        Delete
+                      </CDropdownItem>
+                    </CDropdownMenu>
+                  </CDropdown>
+                </td>
+              </CTableRow>
+            ))}
         </CTableBody>
       </CTable>
     </div>
