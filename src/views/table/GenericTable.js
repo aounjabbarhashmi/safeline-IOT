@@ -63,16 +63,16 @@ const GenericTable = ({ columns = [], data = [], deleteOrg }) => {
                       <CIcon icon={cilSettings} />
                     </CDropdownToggle>
                     <CDropdownMenu>
+                      <CDropdownItem>
+                        <CIcon icon={cilPencil} className="me-2" />
+                        Edit
+                      </CDropdownItem>
                       <CDropdownItem
                         onClick={() => {
                           setDeleteOrganizationId(item.id)
                           openDeleteModal()
                         }}
                       >
-                        <CIcon icon={cilPencil} className="me-2" />
-                        Edit
-                      </CDropdownItem>
-                      <CDropdownItem>
                         <CIcon icon={cilTrash} className="me-2" />
                         Delete
                       </CDropdownItem>
