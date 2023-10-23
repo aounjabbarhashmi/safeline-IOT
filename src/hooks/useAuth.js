@@ -36,3 +36,9 @@ export const getDepartmentsData = async (id) => {
   const { data } = await axiosInstance.get(`Department/GetDepartments?systemId=${id}&searchParam=`)
   return data
 }
+
+export const deleteOrganization = async (id) => {
+  setAuthenticationToken(localStorage.getItem('token'))
+  const { data } = await axiosInstance.delete(`Organization/${id}`)
+  return data
+}

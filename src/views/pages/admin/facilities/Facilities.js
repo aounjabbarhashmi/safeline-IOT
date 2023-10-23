@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CButton, CCard, CCol, CRow } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
+import GlobalLoader from 'src/components/global-loader/GlobalLoader'
 import { GenericModal } from 'src/components/modal/GenericModal'
 import { useLoader } from 'src/global-context/LoaderContext'
 import { useMutation } from 'react-query'
@@ -96,7 +97,7 @@ const Facilities = () => {
             </CButton>
           </CCol>
         </CRow>
-        <GenericTable columns={columns} data={data} />
+        {data ? <GenericTable columns={columns} data={data} /> : <GlobalLoader />}
       </CCard>
     </>
   )

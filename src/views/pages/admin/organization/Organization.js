@@ -1,13 +1,19 @@
 import { CButton, CCard, CCol, CRow } from '@coreui/react'
 import React, { useState } from 'react'
 import { GenericModal } from 'src/components/modal/GenericModal'
+
 import useDataStore from 'src/store/state'
 import Modals from 'src/views/notifications/modals/Modals'
 import GenericTable from 'src/views/table/GenericTable'
 import Facilities from '../facilities/Facilities'
 import AddOrganizationForm from 'src/views/forms/add-organization-form/AddOrganizationForm'
 import { useMutation } from 'react-query'
-import { addOrganization, getOrganizationData, EditOrganization } from 'src/hooks/useAuth'
+import {
+  addOrganization,
+  getOrganizationData,
+  EditOrganization,
+  deleteOrganization,
+} from 'src/hooks/useAuth'
 import { useGlobalInfo } from 'src/global-context/GlobalContext'
 import { useLoader } from 'src/global-context/LoaderContext'
 import { useNavigate } from 'react-router-dom'
@@ -34,6 +40,37 @@ const Organization = () => {
   const openModal = () => {
     setIsModalOpen(true)
   }
+  const deleteOrg = (organizationId) => {
+    deleteOrganizationById.mutate(organizationId, {
+      onSuccess: () => {
+        setShowToast(() => ({
+          show: true,
+          title: 'Success',
+          content: 'Organization deleted Successfully',
+        }))
+        organizationData('', {
+          onSuccess: (data) => {
+            addData(data)
+          },
+          onError: (error) => {
+            setShowToast(() => ({
+              show: true,
+              title: 'Error',
+              content: error.response.data,
+            }))
+          },
+        })
+      },
+      onError: (error) => {
+        setShowToast(() => ({
+          show: true,
+          title: 'Error',
+          content: error.response.data,
+        }))
+      },
+    })
+  }
+
   const closeModal = () => {
     setIsModalOpen(false)
   }
@@ -42,6 +79,7 @@ const Organization = () => {
   const navigate = useNavigate()
   const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
   const hideLoader = () => dispatch({ type: 'HIDE_LOADER' })
+  const deleteOrganizationById = useMutation(deleteOrganization)
   function saveHandler(handler) {
     showLoader()
 
@@ -129,6 +167,7 @@ const Organization = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
       />
+
       <CCard className="p-4">
         <CRow>
           <CCol>
@@ -148,7 +187,12 @@ const Organization = () => {
             </CButton>
           </CCol>
         </CRow>
-        <GenericTable columns={columns} data={data[0]} openEditModal={openEditModal} />
+        <GenericTable
+          columns={columns}
+          data={data[0]}
+          deleteOrg={deleteOrg}
+          openEditModal={openEditModal}
+        />
       </CCard>
     </>
   )
