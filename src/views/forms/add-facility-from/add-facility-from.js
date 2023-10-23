@@ -101,11 +101,12 @@ const AddFacilityFrom = () => {
       <CFormSelect
         aria-describedby="validationCustom04Feedback"
         feedbackInvalid="Please select a valid facility type."
+        value={formData.facilityType}
         id="validationFacilityType"
         onChange={handleInputChange}
         required
       >
-        <option >Choose...</option>
+        <option > </option>
         <option>Lahore City</option>
         <optio>Karachi City</optio>
         <option>Murre City</option>
