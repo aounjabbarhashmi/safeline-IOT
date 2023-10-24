@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   CButton,
@@ -28,7 +28,7 @@ import {
 } from '@coreui/icons'
 import { useLoader } from 'src/global-context/LoaderContext'
 
-const AddDepartmentForm = ({ closeModal, saveHandler }) => {
+const AddDepartmentForm = ({ closeModal, saveHandler, data }) => {
   const { dispatch } = useLoader()
   const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
   const [validated, setValidated] = useState(false)
@@ -40,6 +40,18 @@ const AddDepartmentForm = ({ closeModal, saveHandler }) => {
     organizationId: 33,
     systemId: 31,
   })
+  useEffect(() => {
+    if (data) {
+      setFormData(() => ({
+        name: data.name,
+        contactEmail: data.contactEmail,
+        description: data.description,
+        facility: data.system,
+        organizationId: 33,
+        systemId: 31,
+      }))
+    }
+  }, [data])
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
     setFormData({
@@ -165,6 +177,15 @@ const AddDepartmentForm = ({ closeModal, saveHandler }) => {
 AddDepartmentForm.propTypes = {
   closeModal: PropTypes.func.isRequired,
   saveHandler: PropTypes.func.isRequired,
+  data: PropTypes.shape({
+    name: PropTypes.string,
+    system: PropTypes.string,
+    contactEmail: PropTypes.string,
+    description: PropTypes.string,
+    facility: PropTypes.string,
+    organizationId: PropTypes.number,
+    systemId: PropTypes.number,
+  }),
 }
 
 export default AddDepartmentForm

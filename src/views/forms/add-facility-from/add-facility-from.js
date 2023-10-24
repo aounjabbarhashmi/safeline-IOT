@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   CButton,
@@ -20,27 +20,49 @@ import {
   cilPhone,
 } from '@coreui/icons'
 import { useLoader } from 'src/global-context/LoaderContext'
+import useDataStore from 'src/store/state'
 
-const AddFacilityFrom = ({ closeModal, saveHandler }) => {
+const AddFacilityFrom = ({ closeModal, saveHandler, data }) => {
+  const dataOrganization = useDataStore((state) => state.data)
   const { dispatch } = useLoader()
   const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
   const [validated, setValidated] = useState(false)
   const [formData, setFormData] = useState({
     systemName: '',
     systemType: '',
-    organizationId: 33,
-    timeZone: '',
+    organizationId: 'Selected Organization',
+    timezone: '',
     currency: '',
     siteManager: '',
-    contact: '',
+    contactNumber: '',
     contactEmail: '',
     address: '',
     city: '',
     street: '',
-    postCode: '',
-    latitude: '',
-    longitude: '',
+    postCode: 0,
+    latitude: 0,
+    longitude: 0,
   })
+  useEffect(() => {
+    if (data) {
+      setFormData(() => ({
+        systemName: data.systemName,
+        systemType: data.systemType,
+        organizationId: localStorage.getItem('OrganizationId'),
+        timezone: data.timezone,
+        currency: data.currency,
+        siteManager: data.siteManager,
+        contactNumber: data.contactNumber,
+        contactEmail: data.contactEmail,
+        address: data.address,
+        city: data.city,
+        street: data.street,
+        postCode: +data.postcode,
+        latitude: +data.latitude,
+        longitude: +data.longitude,
+      }))
+    }
+  }, [data])
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
     setFormData({
@@ -62,9 +84,7 @@ const AddFacilityFrom = ({ closeModal, saveHandler }) => {
     // Handle form submission here
     if (form.checkValidity() === true) {
       showLoader()
-      console.log(formData)
       saveHandler(formData)
-      // console.log('Form is valid, submit data:', formData)
       event.preventDefault()
       closeModal()
     }
@@ -98,7 +118,30 @@ const AddFacilityFrom = ({ closeModal, saveHandler }) => {
       {/* Facility Type */}
       <CCol md={12}>
         {/* Form select*/}
-        <CFormLabel htmlFor="validationFacilityName">Facility Type*</CFormLabel>
+        <CFormSelect
+          name="organizationId"
+          aria-describedby="validationCustom04Feedback"
+          feedbackInvalid="Please select a valid Organization."
+          id="validationOrganization"
+          value={formData.organizationId}
+          onChange={handleInputChange}
+          label="Organization*"
+          required
+          // eslint-disable-next-line react/prop-types
+          disabled={data ? true : false}
+        >
+          <option>Select Organization</option>
+          {dataOrganization[0]?.map((item) => {
+            return (
+              <option key={item.id} value={item.id}>
+                {item.organizationName}
+              </option>
+            )
+          })}
+        </CFormSelect>
+      </CCol>
+      <CCol md={12}>
+        {/* Form select*/}
         <CFormSelect
           name="systemType"
           aria-describedby="validationCustom04Feedback"
@@ -109,37 +152,16 @@ const AddFacilityFrom = ({ closeModal, saveHandler }) => {
           label="Facility Type*"
           required
         >
-          <option>choose...</option>
-          <option>Lahore City</option>
-          <optio>Karachi City</optio>
-          <option>Murre City</option>
+          <option>Select Facility Type</option>
+          <option value={'Mixed Dashboard'}>Mixed Dashboard</option>
+          <option value={'Energy Dashboard'}>Energy Dashboard</option>
+          <option value={'Condition Dashboard'}>Condition Dashboard</option>
         </CFormSelect>
       </CCol>
-      {/* Organization */}
-      <CCol md={12}>
-        <CFormLabel htmlFor="validationOrganization">Organizations* </CFormLabel>
-        <CInputGroup className="has-validation">
-          <CInputGroupText>
-            {/*} <CIcon icon={cilPaperPlane} alt="Organization" />*/}
-          </CInputGroupText>
-          <CFormInput
-            type="text"
-            name="organizations"
-            value={formData.organizations}
-            onChange={handleInputChange}
-            aria-describedby="inputGroupPrependFeedback"
-            feedbackInvalid="Facility Name is required"
-            id="validationOrganizations"
-            required
-          />
-        </CInputGroup>
-      </CCol>
-      {/* Time zone*/}
-      {/*} <CFormLabel htmlFor="validationTimeZone">Time Zone*</CFormLabel>*/}
       <CCol md={6}>
         <CFormSelect
-          name="timeZone"
-          value={formData.timeZone}
+          name="timezone"
+          value={formData.timezone}
           onChange={handleInputChange}
           aria-describedby="validationCustom04Feedback"
           feedbackInvalid="Please select a valid time zone."
@@ -147,11 +169,10 @@ const AddFacilityFrom = ({ closeModal, saveHandler }) => {
           label="Time Zone*"
           required
         >
-          <option></option>
-          <option>Arial bl</option>
-          <option>Blue re</option>
-          <option>Green re</option>
-          <option>Red spr</option>
+          <option>Select Timezone</option>
+          <option value={'Asia/Colombo'}>Asia/Colombo</option>
+          <option value={'Asia/Dhaka'}>Asia/Dhaka</option>
+          <option value={'Asia/Dubai'}>Asia/Dubai</option>
         </CFormSelect>
       </CCol>
 
@@ -168,11 +189,10 @@ const AddFacilityFrom = ({ closeModal, saveHandler }) => {
           label="Currency*"
           required
         >
-          <option></option>
-          <option>Arial bl</option>
-          <option>Blue re</option>
-          <option>Green re</option>
-          <option>Red spr</option>
+          <option>Select Currency</option>
+          <option value={'USD'}>USD</option>
+          <option value={'EUR'}>EUR</option>
+          <option value={'ZAR'}>ZAR</option>
         </CFormSelect>
       </CCol>
       {/* Site manager */}
@@ -202,10 +222,10 @@ const AddFacilityFrom = ({ closeModal, saveHandler }) => {
             <CIcon icon={cilPhone} alt="Contact" />
           </CInputGroupText>
           <CFormInput
-            type="phone number"
-            name="contact"
-            placeholder="123456"
-            value={formData.contact}
+            type="tel"
+            name="contactNumber"
+            placeholder="+92xxxx"
+            value={formData.contactNumber}
             onChange={handleInputChange}
             aria-describedby="validationContactNumber"
             feedbackInvalid="Phone Number is required."
@@ -356,6 +376,22 @@ const AddFacilityFrom = ({ closeModal, saveHandler }) => {
 AddFacilityFrom.propTypes = {
   closeModal: PropTypes.func.isRequired,
   saveHandler: PropTypes.func.isRequired,
+  data: PropTypes.shape({
+    systemName: PropTypes.string,
+    systemType: PropTypes.string,
+    organizationId: PropTypes.string,
+    timezone: PropTypes.string,
+    currency: PropTypes.string,
+    siteManager: PropTypes.string,
+    contactNumber: PropTypes.string,
+    contactEmail: PropTypes.string,
+    address: PropTypes.string,
+    city: PropTypes.string,
+    street: PropTypes.string,
+    postcode: PropTypes.string,
+    latitude: PropTypes.string,
+    longitude: PropTypes.string,
+  }),
 }
 
 export default AddFacilityFrom

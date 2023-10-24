@@ -4,7 +4,9 @@ import { useMutation } from 'react-query'
 import GlobalLoader from 'src/components/global-loader/GlobalLoader'
 import { GenericModal } from 'src/components/modal/GenericModal'
 import { useLoader } from 'src/global-context/LoaderContext'
-import { getAllDevicesData, useAllDevicesData } from 'src/hooks/useDevices'
+import { useGlobalInfo } from 'src/global-context/GlobalContext'
+import { getAllDevicesData, useAllDevicesData, addDevice, EditDevice } from 'src/hooks/useDevices'
+import AddDeviceForm from 'src/views/forms/add-device-form/add-device-form'
 import GenericTable from 'src/views/table/GenericTable'
 const columns = [
   { key: 'name', label: 'Device Name' },
@@ -15,14 +17,25 @@ const Devices = () => {
   const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
   const hideLoader = () => dispatch({ type: 'HIDE_LOADER' })
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editData, setEditData] = useState()
+  const [isAddMode, setIsAddMode] = useState(false)
   // const { mutate: getDevices, data } = useMutation(getAllDevicesData)
   const { data, isSuccess, isError } = useAllDevicesData()
+  const { mutate: deviceAdd } = useMutation(addDevice)
+  const { mutate: deviceEdit } = useMutation(EditDevice)
+  const { setShowToast } = useGlobalInfo()
 
   const openModal = () => {
     setIsModalOpen(true)
   }
   const closeModal = () => {
     setIsModalOpen(false)
+  }
+  const openEditModal = (data) => {
+    console.log(data)
+    setIsAddMode(false)
+    setEditData(data)
+    setIsModalOpen(true)
   }
   useEffect(() => {
     showLoader()
@@ -32,11 +45,90 @@ const Devices = () => {
       hideLoader()
     }
   }, [isSuccess, isError, showLoader, hideLoader])
+  function saveHandler(handler) {
+    showLoader()
+    setTimeout(() => {
+      if (isAddMode) {
+        deviceAdd(handler, {
+          onSuccess: () => {
+            hideLoader()
+            setShowToast(() => ({
+              show: true,
+              title: 'Success',
+              content: 'Device Created Successfully',
+            }))
+            // organizationData('', {
+            //   onSuccess: (data) => {
+            //     addData(data)
+            //   },
+            //   onError: (error) => {
+            //     setShowToast(() => ({
+            //       show: true,
+            //       title: 'Error',
+            //       content: error.response.data,
+            //     }))
+            //   },
+            // })
+          },
+          onError: (error) => {
+            hideLoader()
+            setShowToast(() => ({
+              show: true,
+              title: 'Error',
+              content: error.response.data,
+              color: '#FF0000',
+            }))
+          },
+        })
+      } else {
+        deviceEdit(
+          { handler, editData },
+          {
+            onSuccess: () => {
+              hideLoader()
+              setShowToast(() => ({
+                show: true,
+                title: 'Success',
+                content: 'Device Edited Successfully',
+              }))
+              // organizationData('', {
+              //   onSuccess: (data) => {
+              //     addData(data)
+              //   },
+              //   onError: (error) => {
+              //     setShowToast(() => ({
+              //       show: true,
+              //       title: 'Error',
+              //       content: error.response.data,
+              //     }))
+              //   },
+              // })
+            },
+            onError: (error) => {
+              hideLoader()
+              setShowToast(() => ({
+                show: true,
+                title: 'Error',
+                content: error.response.data,
+                color: '#FF0000',
+              }))
+            },
+          },
+        )
+      }
+    }, 0)
+  }
   return (
     <>
       <GenericModal
-        title="Add Devices"
-        content="This is the modal content."
+        title={isAddMode ? 'Add Device' : 'Edit Device'}
+        content={
+          isAddMode ? (
+            <AddDeviceForm closeModal={closeModal} saveHandler={saveHandler} />
+          ) : (
+            <AddDeviceForm closeModal={closeModal} saveHandler={saveHandler} data={editData} />
+          )
+        }
         isOpen={isModalOpen}
         onClose={closeModal}
       />
@@ -46,12 +138,24 @@ const Devices = () => {
             <h3 className="pb-2">Devices</h3>
           </CCol>
           <CCol>
-            <CButton color="primary" className="float-end" onClick={openModal}>
+            <CButton
+              color="primary"
+              className="float-end"
+              onClick={() => {
+                setIsAddMode(true)
+                setEditData(null)
+                setIsModalOpen(true)
+              }}
+            >
               Add Devices
             </CButton>
           </CCol>
         </CRow>
-        {data ? <GenericTable columns={columns} data={data} /> : <GlobalLoader />}
+        {data ? (
+          <GenericTable columns={columns} data={data} openEditModal={openEditModal} />
+        ) : (
+          <GlobalLoader />
+        )}
       </CCard>
     </>
   )
