@@ -6,9 +6,12 @@ import { CContainer, CSpinner } from '@coreui/react'
 import routes from '../routes'
 import { useLoader } from 'src/global-context/LoaderContext'
 import GlobalLoader from './global-loader/GlobalLoader'
+import { useGlobalInfo } from 'src/global-context/GlobalContext'
 
 const AppContent = () => {
   const { isLoading } = useLoader()
+  // const { loading, setLoading } = useGlobalInfo()
+
   return (
     <>
       {isLoading ? (

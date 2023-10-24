@@ -8,6 +8,10 @@ export const loginPost = async (payload) => {
   })
   return data
 }
+export const addOrganization = async (payload) => {
+  const { data } = await axiosInstance.post(`Organization`, payload)
+  return data
+}
 export const getOrganizationData = async () => {
   setAuthenticationToken(localStorage.getItem('token'))
   const { data } = await axiosInstance.get(`Organization?searchParam=`)
@@ -21,9 +25,20 @@ export const getFacilitiesData = async (id) => {
   )
   return data
 }
+export const EditOrganization = async (payload) => {
+  setAuthenticationToken(localStorage.getItem('token'))
+  const { data } = await axiosInstance.patch(`Organization/${payload.editData.id}`, payload.handler)
+  return data
+}
 
 export const getDepartmentsData = async (id) => {
   setAuthenticationToken(localStorage.getItem('token'))
   const { data } = await axiosInstance.get(`Department/GetDepartments?systemId=${id}&searchParam=`)
+  return data
+}
+
+export const deleteOrganization = async (id) => {
+  setAuthenticationToken(localStorage.getItem('token'))
+  const { data } = await axiosInstance.delete(`Organization/${id}`)
   return data
 }
