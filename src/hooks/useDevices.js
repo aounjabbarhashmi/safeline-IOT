@@ -23,3 +23,15 @@ export const deleteDevice = async (id) => {
   const { data } = await axiosInstance.delete(`Device/DeleteDevice?Id=${id}`)
   return data
 }
+export const addDevice = async (payload) => {
+  const { data } = await axiosInstance.post(`Device/CreateDevice`, payload)
+  return data
+}
+export const EditDevice = async (payload) => {
+  setAuthenticationToken(localStorage.getItem('token'))
+  const { data } = await axiosInstance.patch(
+    `Device/UpdateDevice?Id=${payload.editData.id}`,
+    payload.handler,
+  )
+  return data
+}

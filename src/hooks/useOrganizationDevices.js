@@ -24,3 +24,12 @@ export const deleteOrganizationSensor = async (id) => {
   const { data } = await axiosInstance.patch(`OrganizationSensor/UnassignSensor?id=${id}`)
   return data
 }
+export const addOrganizationSensor = async (payload) => {
+  const { data } = await axiosInstance.post(`System/CreateNewSystem`, payload)
+  return data
+}
+export const EditOrganizationSensor = async (payload) => {
+  setAuthenticationToken(localStorage.getItem('token'))
+  const { data } = await axiosInstance.patch(`System/${payload.editData.id}`, payload.handler)
+  return data
+}

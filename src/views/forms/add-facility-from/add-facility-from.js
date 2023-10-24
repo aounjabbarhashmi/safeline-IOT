@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import {
   CButton,
   CCol,
@@ -18,13 +19,16 @@ import {
   cilLibraryBuilding,
   cilPhone,
 } from '@coreui/icons'
+import { useLoader } from 'src/global-context/LoaderContext'
 
-const AddFacilityFrom = () => {
+const AddFacilityFrom = ({ closeModal, saveHandler, data }) => {
+  const { dispatch } = useLoader()
+  const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
   const [validated, setValidated] = useState(false)
   const [formData, setFormData] = useState({
-    facilityName: '',
-    facilityType: '',
-    organizations: '',
+    systemName: '',
+    systemType: '',
+    organizationId: 33,
     timeZone: '',
     currency: '',
     siteManager: '',
@@ -37,6 +41,26 @@ const AddFacilityFrom = () => {
     latitude: '',
     longitude: '',
   })
+  useEffect(() => {
+    if (data) {
+      setFormData(() => ({
+        systemName: data.systemName,
+        systemType: data.systemType,
+        organizationId: 33,
+        timezone: data.timezone,
+        currency: data.currency,
+        siteManager: data.siteManager,
+        contact: data.contact,
+        contactEmail: data.contactEmail,
+        address: data.address,
+        city: data.city,
+        street: data.street,
+        postCode: data.postcode,
+        latitude: data.latitude,
+        longitude: data.longitude,
+      }))
+    }
+  }, [data])
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
     setFormData({
@@ -57,8 +81,12 @@ const AddFacilityFrom = () => {
 
     // Handle form submission here
     if (form.checkValidity() === true) {
-      console.log('Form is valid, submit data:', formData)
+      showLoader()
+      console.log(formData)
+      saveHandler(formData)
+      // console.log('Form is valid, submit data:', formData)
       event.preventDefault()
+      closeModal()
     }
   }
 
@@ -78,8 +106,8 @@ const AddFacilityFrom = () => {
           </CInputGroupText>
           <CFormInput
             type="text"
-            name="facilityName"
-            value={formData.facilityName}
+            name="systemName"
+            value={formData.systemName}
             onChange={handleInputChange}
             feedbackInvalid="Facility Name is required"
             id="validationFacilityName"
@@ -92,13 +120,16 @@ const AddFacilityFrom = () => {
         {/* Form select*/}
         <CFormLabel htmlFor="validationFacilityName">Facility Type*</CFormLabel>
         <CFormSelect
+          name="systemType"
           aria-describedby="validationCustom04Feedback"
           feedbackInvalid="Please select a valid facility type."
           id="validationFacilityType"
+          value={formData.systemType}
           onChange={handleInputChange}
+          label="Facility Type*"
           required
         >
-          <option>Choose...</option>
+          <option>choose...</option>
           <option>Lahore City</option>
           <optio>Karachi City</optio>
           <option>Murre City</option>
@@ -341,6 +372,25 @@ const AddFacilityFrom = () => {
       </CCol>
     </CForm>
   )
+}
+AddFacilityFrom.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  saveHandler: PropTypes.func.isRequired,
+  data: PropTypes.shape({
+    systemName: PropTypes.string,
+    systemType: PropTypes.string,
+    timezone: PropTypes.string,
+    currency: PropTypes.string,
+    siteManager: PropTypes.string,
+    contact: PropTypes.string,
+    contactEmail: PropTypes.string,
+    address: PropTypes.string,
+    city: PropTypes.string,
+    street: PropTypes.string,
+    postcode: PropTypes.string,
+    latitude: PropTypes.string,
+    longitude: PropTypes.string,
+  }),
 }
 
 export default AddFacilityFrom

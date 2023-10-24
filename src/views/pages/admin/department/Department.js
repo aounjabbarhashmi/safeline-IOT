@@ -5,9 +5,15 @@ import { useMutation } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import GlobalLoader from 'src/components/global-loader/GlobalLoader'
 import { GenericModal } from 'src/components/modal/GenericModal'
-import { useLoader } from 'src/global-context/LoaderContext'
-import { useAllDepartmentsData, deleteDepartment } from 'src/hooks/useDepartments'
 import { useGlobalInfo } from 'src/global-context/GlobalContext'
+import { useLoader } from 'src/global-context/LoaderContext'
+import {
+  useAllDepartmentsData,
+  deleteDepartment,
+  addDepartment,
+  EditDepartment,
+} from 'src/hooks/useDepartments'
+import AddDepartmentForm from 'src/views/forms/add-department-form/add-department-form'
 import GenericTable from 'src/views/table/GenericTable'
 const columns = [
   { key: 'name', label: 'Department Name' },
@@ -19,12 +25,16 @@ const columns = [
 ]
 const Department = () => {
   const { dispatch } = useLoader()
+  const { mutate: departmentAdd } = useMutation(addDepartment)
+  const { mutate: departmentEdit } = useMutation(EditDepartment)
   const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
   const hideLoader = () => dispatch({ type: 'HIDE_LOADER' })
   const { setShowToast } = useGlobalInfo()
   const { data, isSuccess, isError, refetch: refetchDepartments } = useAllDepartmentsData()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const deleteDepartmentById = useMutation(deleteDepartment)
+  const [editData, setEditData] = useState()
+  const [isAddMode, setIsAddMode] = useState(false)
   const openModal = () => {
     setIsModalOpen(true)
   }
@@ -59,6 +69,13 @@ const Department = () => {
     })
     hideLoader()
   }
+  const openEditModal = (data) => {
+    debugger
+    console.log(data)
+    setIsAddMode(false)
+    setEditData(data)
+    setIsModalOpen(true)
+  }
   useEffect(() => {
     showLoader()
     if (isSuccess && !isError) {
@@ -67,11 +84,90 @@ const Department = () => {
       hideLoader()
     }
   }, [showLoader, hideLoader, isSuccess, isError])
+  function saveHandler(handler) {
+    showLoader()
+    setTimeout(() => {
+      if (isAddMode) {
+        departmentAdd(handler, {
+          onSuccess: () => {
+            hideLoader()
+            setShowToast(() => ({
+              show: true,
+              title: 'Success',
+              content: 'Department Created Successfully',
+            }))
+            // organizationData('', {
+            //   onSuccess: (data) => {
+            //     addData(data)
+            //   },
+            //   onError: (error) => {
+            //     setShowToast(() => ({
+            //       show: true,
+            //       title: 'Error',
+            //       content: error.response.data,
+            //     }))
+            //   },
+            // })
+          },
+          onError: (error) => {
+            hideLoader()
+            setShowToast(() => ({
+              show: true,
+              title: 'Error',
+              content: error.response.data,
+              color: '#FF0000',
+            }))
+          },
+        })
+      } else {
+        departmentEdit(
+          { handler, editData },
+          {
+            onSuccess: () => {
+              hideLoader()
+              setShowToast(() => ({
+                show: true,
+                title: 'Success',
+                content: 'Department Edited Successfully',
+              }))
+              // organizationData('', {
+              //   onSuccess: (data) => {
+              //     addData(data)
+              //   },
+              //   onError: (error) => {
+              //     setShowToast(() => ({
+              //       show: true,
+              //       title: 'Error',
+              //       content: error.response.data,
+              //     }))
+              //   },
+              // })
+            },
+            onError: (error) => {
+              hideLoader()
+              setShowToast(() => ({
+                show: true,
+                title: 'Error',
+                content: error.response.data,
+                color: '#FF0000',
+              }))
+            },
+          },
+        )
+      }
+    }, 0)
+  }
   return (
     <>
       <GenericModal
-        title="Add Department"
-        content="This is the modal content."
+        title={isAddMode ? 'Add Department' : 'Edit Department'}
+        content={
+          isAddMode ? (
+            <AddDepartmentForm closeModal={closeModal} saveHandler={saveHandler} />
+          ) : (
+            <AddDepartmentForm closeModal={closeModal} saveHandler={saveHandler} data={editData} />
+          )
+        }
         isOpen={isModalOpen}
         onClose={closeModal}
       />
@@ -81,13 +177,26 @@ const Department = () => {
             <h3 className="pb-2">Departments</h3>
           </CCol>
           <CCol>
-            <CButton color="primary" className="float-end" onClick={openModal}>
+            <CButton
+              color="primary"
+              className="float-end"
+              onClick={() => {
+                setIsAddMode(true)
+                setEditData(null)
+                setIsModalOpen(true)
+              }}
+            >
               Add Departments
             </CButton>
           </CCol>
         </CRow>
         {data ? (
-          <GenericTable columns={columns} data={data} OnDeleteItem={deleteDepartments} />
+          <GenericTable
+            columns={columns}
+            data={data}
+            openEditModal={openEditModal}
+            OnDeleteItem={deleteDepartments}
+          />
         ) : (
           <GlobalLoader />
         )}

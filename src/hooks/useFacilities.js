@@ -24,3 +24,12 @@ export const deleteFacility = async (id) => {
   const { data } = await axiosInstance.delete(`System/${id}`)
   return data
 }
+export const addFacility = async (payload) => {
+  const { data } = await axiosInstance.post(`System/CreateNewSystem`, payload)
+  return data
+}
+export const EditFacility = async (payload) => {
+  setAuthenticationToken(localStorage.getItem('token'))
+  const { data } = await axiosInstance.patch(`System/${payload.editData.id}`, payload.handler)
+  return data
+}
