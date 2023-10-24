@@ -1,4 +1,3 @@
-import { useQuery } from 'react-query'
 import { setAuthenticationToken } from './auth'
 import { axiosInstance } from './axios'
 
@@ -36,7 +35,7 @@ export const EditFacility = async (payload) => {
     contactEmail: payload.handler.contactEmail,
     contactNumber: payload.handler.contactNumber,
     siteManager: payload.handler.siteManager,
-    timezone: payload.handler.timeZone,
+    timezone: payload.handler.timezone,
     currency: payload.handler.currency,
     address: payload.handler.address,
     street: payload.handler.street,
