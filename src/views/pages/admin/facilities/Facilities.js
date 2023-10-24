@@ -4,9 +4,11 @@ import React, { useEffect, useState } from 'react'
 import GlobalLoader from 'src/components/global-loader/GlobalLoader'
 import { GenericModal } from 'src/components/modal/GenericModal'
 import { useLoader } from 'src/global-context/LoaderContext'
-import { useAllFacilitiesData } from 'src/hooks/useFacilities'
+import { useAllFacilitiesData, deleteFacility } from 'src/hooks/useFacilities'
 import AddFacilityFrom from 'src/views/forms/add-facility-from/add-facility-from'
+import { useGlobalInfo } from 'src/global-context/GlobalContext'
 import GenericTable from 'src/views/table/GenericTable'
+import { useMutation } from 'react-query'
 const columns = [
   { key: 'systemName', label: 'System Name' },
   { key: 'systemType', label: 'System Type' },
@@ -22,13 +24,43 @@ const Facilities = () => {
   const { dispatch } = useLoader()
   const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
   const hideLoader = () => dispatch({ type: 'HIDE_LOADER' })
-  const { data, isSuccess, isError } = useAllFacilitiesData(dispatch)
+  const { setShowToast } = useGlobalInfo()
+  const { data, isSuccess, isError, refetch: refetchFacilities } = useAllFacilitiesData(dispatch)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const deleteFacilityById = useMutation(deleteFacility)
   const openModal = () => {
     setIsModalOpen(true)
   }
   const closeModal = () => {
     setIsModalOpen(false)
+  }
+
+  /**
+   * Deletes a Fecility by its ID.
+   * @param {number} facilityId - The ID of the Facility to be deleted.
+   */
+  const deleteFacilities = (facilityId) => {
+    showLoader()
+    deleteFacilityById.mutate(facilityId, {
+      onSuccess: () => {
+        setShowToast(() => ({
+          show: true,
+          title: 'Success',
+          content: 'Facility deleted Successfully',
+        }))
+        refetchFacilities()
+        hideLoader()
+      },
+      onError: (error) => {
+        setShowToast(() => ({
+          show: true,
+          title: 'Error',
+          content: error.response.data.error,
+        }))
+        hideLoader()
+      },
+    })
+    hideLoader()
   }
   useEffect(() => {
     showLoader()
@@ -57,7 +89,11 @@ const Facilities = () => {
             </CButton>
           </CCol>
         </CRow>
-        {data ? <GenericTable columns={columns} data={data} /> : <GlobalLoader />}
+        {data ? (
+          <GenericTable columns={columns} data={data} OnDeleteItem={deleteFacilities} />
+        ) : (
+          <GlobalLoader />
+        )}
       </CCard>
     </>
   )

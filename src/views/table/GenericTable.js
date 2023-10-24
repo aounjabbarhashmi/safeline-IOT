@@ -16,12 +16,14 @@ import CIcon from '@coreui/icons-react'
 import { cilPencil, cilSettings, cilTrash } from '@coreui/icons'
 import { DeleteModal } from 'src/components/modal/DeleteModal'
 
-const GenericTable = ({ columns = [], data = [], deleteOrg }) => {
+const GenericTable = ({ columns = [], data = [], OnDeleteItem }) => {
   const renderCell = (item, key) => {
     const keys = key.split('.')
     return keys.reduce((acc, currentKey) => acc?.[currentKey], item)
   }
-  const [deleteOrganizationId, setDeleteOrganizationId] = useState('')
+
+  //store the Id that is to be deleted
+  const [DeleteId, setDeleteId] = useState('')
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const openDeleteModal = () => {
     setIsDeleteModalOpen(true)
@@ -34,10 +36,10 @@ const GenericTable = ({ columns = [], data = [], deleteOrg }) => {
       <DeleteModal
         title="Delete"
         content={''}
-        deleteOrg={deleteOrg}
+        OnDeleteClick={OnDeleteItem}
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
-        id={deleteOrganizationId}
+        id={DeleteId}
       />
       <CTable hover className="custom-table">
         <CTableHead>
@@ -69,7 +71,7 @@ const GenericTable = ({ columns = [], data = [], deleteOrg }) => {
                       </CDropdownItem>
                       <CDropdownItem
                         onClick={() => {
-                          setDeleteOrganizationId(item.id)
+                          setDeleteId(item.id)
                           openDeleteModal()
                         }}
                       >

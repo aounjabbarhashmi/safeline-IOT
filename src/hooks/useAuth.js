@@ -32,6 +32,13 @@ export const getDepartmentsData = async (id) => {
   return data
 }
 
+/**
+ * This function is used to delete an organization by its 'id'.
+ * Set the authentication token from local storage.Send a DELETE
+ * request to the 'Organization' endpoint with the specified 'id'.
+ * @param {*} id
+ * @returns Return the response data
+ */
 export const deleteOrganization = async (id) => {
   setAuthenticationToken(localStorage.getItem('token'))
   const { data } = await axiosInstance.delete(`Organization/${id}`)

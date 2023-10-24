@@ -31,7 +31,13 @@ const Organization = () => {
   const openModal = () => {
     setIsModalOpen(true)
   }
-  const deleteOrg = (organizationId) => {
+
+  /**
+   * Deletes an Organization by its ID.
+   * @param {number} organizationId - The ID of the Organization to be deleted.
+   */
+  const deleteOrganizations = (organizationId) => {
+    showLoader()
     deleteOrganizationById.mutate(organizationId, {
       onSuccess: () => {
         setShowToast(() => ({
@@ -51,6 +57,7 @@ const Organization = () => {
             }))
           },
         })
+        hideLoader()
       },
       onError: (error) => {
         setShowToast(() => ({
@@ -58,8 +65,10 @@ const Organization = () => {
           title: 'Error',
           content: error.response.data,
         }))
+        hideLoader()
       },
     })
+    hideLoader()
   }
 
   const closeModal = () => {
@@ -127,7 +136,7 @@ const Organization = () => {
             </CButton>
           </CCol>
         </CRow>
-        <GenericTable columns={columns} data={data[0]} deleteOrg={deleteOrg} />
+        <GenericTable columns={columns} data={data[0]} OnDeleteItem={deleteOrganizations} />
       </CCard>
     </>
   )
