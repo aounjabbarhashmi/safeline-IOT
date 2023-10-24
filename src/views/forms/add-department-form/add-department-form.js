@@ -179,9 +179,11 @@ AddDepartmentForm.propTypes = {
   saveHandler: PropTypes.func.isRequired,
   data: PropTypes.shape({
     name: PropTypes.string,
+    system: PropTypes.string,
     contactEmail: PropTypes.string,
     description: PropTypes.string,
     facility: PropTypes.string,
+    system: PropTypes.string,
     organizationId: PropTypes.number,
     systemId: PropTypes.number,
   }),

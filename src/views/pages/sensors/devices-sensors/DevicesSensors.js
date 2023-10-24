@@ -7,8 +7,12 @@ import { useGlobalInfo } from 'src/global-context/GlobalContext'
 import { useLoader } from 'src/global-context/LoaderContext'
 import { useAllDevicesData } from 'src/hooks/useDevices'
 import { addDeviceSensor, EditDeviceSensor } from 'src/hooks/useDevicesSensors'
-import { getAllDevicesSensorsData, useAllDevicesSensorsData } from 'src/hooks/useDevicesSensors'
 import AddDeviceSensor from 'src/views/forms/add-device-sensors/add-device-sensor'
+import {
+  getAllDevicesSensorsData,
+  useAllDevicesSensorsData,
+  deleteDeviceSensor,
+} from 'src/hooks/useDevicesSensors'
 import GenericTable from 'src/views/table/GenericTable'
 
 const columns = [
@@ -18,6 +22,9 @@ const columns = [
   { key: 'device.name', label: 'Device Name' },
 ]
 const DevicesSensors = () => {
+  const { dispatch } = useLoader()
+  const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
+  const hideLoader = () => dispatch({ type: 'HIDE_LOADER' })
   const { mutate: deviceData, data, isSuccess, isError } = useMutation(getAllDevicesSensorsData)
   const { mutate: DeviceSensorAdd } = useMutation(addDeviceSensor)
   const { mutate: DeviceSensorEdit } = useMutation(EditDeviceSensor)
@@ -25,11 +32,10 @@ const DevicesSensors = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editData, setEditData] = useState()
   const [isAddMode, setIsAddMode] = useState(false)
-  const { dispatch } = useLoader()
-  const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
-  const hideLoader = () => dispatch({ type: 'HIDE_LOADER' })
   const { setShowToast } = useGlobalInfo()
   const [deviceId, setDeviceId] = useState('')
+
+  const deleteDeviceSensorById = useMutation(deleteDeviceSensor)
   const openModal = () => {
     setIsModalOpen(true)
   }
@@ -45,6 +51,12 @@ const DevicesSensors = () => {
   function handleDeviceChange(e) {
     setDeviceId(e.target.value)
     deviceData(e.target.value, {
+      onSuccess: () => {},
+      onError: () => {},
+    })
+  }
+  function getAllDataOfDeviceSensors(myDeviceId) {
+    deviceData(myDeviceId, {
       onSuccess: () => {},
       onError: () => {},
     })
@@ -123,6 +135,38 @@ const DevicesSensors = () => {
     }, 0)
   }
 
+  /**
+   * Deletes a Device sensor by its ID.
+   * @param {number} deviceSensorId - The ID of the Device sensor to be deleted.
+   */
+  const deleteDeviceSensors = (deviceSensorId) => {
+    showLoader()
+    deleteDeviceSensorById.mutate(deviceSensorId, {
+      onSuccess: () => {
+        setShowToast(() => ({
+          show: true,
+          title: 'Success',
+          content: 'Device Sensor deleted Successfully',
+        }))
+        hideLoader()
+        getAllDataOfDeviceSensors(deviceId)
+      },
+      onError: (error) => {
+        setShowToast(() => ({
+          show: true,
+          title: 'Error',
+          content: error.response.data,
+        }))
+        hideLoader()
+      },
+    })
+    hideLoader()
+  }
+  function handleDeviceChange(e) {
+    setDeviceId(e.target.value)
+    getAllDataOfDeviceSensors(e.target.value)
+  }
+
   return (
     <>
       <GenericModal
@@ -175,7 +219,12 @@ const DevicesSensors = () => {
           </CCol>
         </CRow>
         {/* {data ? <GenericTable columns={columns} data={data} /> : <GlobalLoader />} */}
-        <GenericTable columns={columns} data={data?.result} openEditModal={openEditModal} />
+        <GenericTable
+          columns={columns}
+          data={data?.result}
+          OnDeleteItem={deleteDeviceSensors}
+          openEditModal={openEditModal}
+        />
       </CCard>
     </>
   )
