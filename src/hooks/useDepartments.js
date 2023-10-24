@@ -36,7 +36,6 @@ export const addDepartment = async (payload) => {
 }
 export const EditDepartment = async (payload) => {
   setAuthenticationToken(localStorage.getItem('token'))
-  debugger
   const { data } = await axiosInstance.patch(
     `Department/UpdateDepartment?Id=${payload.editData.id}`,
     payload.handler,

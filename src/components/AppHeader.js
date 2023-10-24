@@ -30,7 +30,7 @@ const AppHeader = () => {
   const hideLoader = () => dispatch({ type: 'HIDE_LOADER' })
   const dispatched = useDispatch()
   const [organizationData, setOrganizationData] = useState([])
-  const [facilityData, setFacilityData] = useState([])
+  const { facilityData, setFacilityData } = useGlobalInfo()
   const [departmentsData, setDepartmentsData] = useState([])
   const [selectedOrganizationId, setSelectedOrganizationId] = useState('Select Organization')
   const [selectedFacilityId, setSelectedFacilityId] = useState('Select Facility')
@@ -102,6 +102,12 @@ const AppHeader = () => {
   useEffect(() => {
     showLoader()
     organizationDataFetch()
+    if (
+      localStorage.getItem('OrganizationId') !== undefined ||
+      localStorage.getItem('OrganizationId') !== null
+    ) {
+      facilitiesDataFetch(localStorage.getItem('OrganizationId'))
+    }
   }, [])
   return (
     <CHeader position="sticky" className="mb-4">
@@ -122,7 +128,7 @@ const AppHeader = () => {
               className=""
               aria-label="Organization"
               onChange={handleOrganizationChange}
-              value={selectedOrganizationId}
+              value={localStorage.getItem('OrganizationId')}
             >
               <option>Select Organization</option>
               {organizationData?.map((item) => {

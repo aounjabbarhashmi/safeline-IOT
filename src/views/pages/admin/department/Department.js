@@ -70,8 +70,6 @@ const Department = () => {
     hideLoader()
   }
   const openEditModal = (data) => {
-    debugger
-    console.log(data)
     setIsAddMode(false)
     setEditData(data)
     setIsModalOpen(true)

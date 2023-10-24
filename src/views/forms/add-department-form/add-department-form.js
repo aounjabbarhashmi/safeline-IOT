@@ -41,7 +41,6 @@ const AddDepartmentForm = ({ closeModal, saveHandler, data }) => {
     systemId: 31,
   })
   useEffect(() => {
-    debugger
     if (data) {
       setFormData(() => ({
         name: data.name,
@@ -180,6 +179,7 @@ AddDepartmentForm.propTypes = {
   saveHandler: PropTypes.func.isRequired,
   data: PropTypes.shape({
     name: PropTypes.string,
+    system: PropTypes.string,
     contactEmail: PropTypes.string,
     description: PropTypes.string,
     facility: PropTypes.string,
