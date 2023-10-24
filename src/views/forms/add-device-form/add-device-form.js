@@ -42,7 +42,6 @@ const AddDeviceForm = ({ closeModal, saveHandler, data }) => {
     active: true,
   })
   useEffect(() => {
-    debugger
     if (data) {
       setFormData(() => ({
         name: data.name,
@@ -177,6 +176,7 @@ AddDeviceForm.propTypes = {
   closeModal: PropTypes.func.isRequired,
   saveHandler: PropTypes.func.isRequired,
   data: PropTypes.shape({
+    name: PropTypes.string,
     deviceName: PropTypes.string,
     manufacturerName: PropTypes.string,
     facilities: PropTypes.string,

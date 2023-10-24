@@ -6,9 +6,10 @@ import { GenericModal } from 'src/components/modal/GenericModal'
 import { useLoader } from 'src/global-context/LoaderContext'
 import { useMutation } from 'react-query'
 import { useGlobalInfo } from 'src/global-context/GlobalContext'
-import { useAllFacilitiesData, addFacility, EditFacility } from 'src/hooks/useFacilities'
+import { addFacility, EditFacility, getAllFacilitiesData } from 'src/hooks/useFacilities'
 import AddFacilityFrom from 'src/views/forms/add-facility-from/add-facility-from'
 import GenericTable from 'src/views/table/GenericTable'
+import { getFacilitiesData } from 'src/hooks/useAuth'
 const columns = [
   { key: 'systemName', label: 'System Name' },
   { key: 'systemType', label: 'System Type' },
@@ -26,7 +27,8 @@ const Facilities = () => {
   const hideLoader = () => dispatch({ type: 'HIDE_LOADER' })
   const { mutate: facilityAdd } = useMutation(addFacility)
   const { mutate: facilityEdit } = useMutation(EditFacility)
-  const { data, isSuccess, isError } = useAllFacilitiesData(dispatch)
+  const { facilityData, setFacilityData } = useGlobalInfo()
+  const { mutate: facility } = useMutation(getAllFacilitiesData)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editData, setEditData] = useState()
   const [isAddMode, setIsAddMode] = useState(false)
@@ -43,14 +45,37 @@ const Facilities = () => {
     setEditData(data)
     setIsModalOpen(true)
   }
-  useEffect(() => {
+  function getAllFacilities() {
+    facility('', {
+      onSuccess: (data) => {
+        setFacilityData(data)
+      },
+      onError: (error) => {},
+    })
+  }
+  const { mutate: getFacilities } = useMutation(getFacilitiesData)
+  function facilitiesDataFetch(selectedId) {
     showLoader()
-    if (isSuccess && !isError) {
-      hideLoader()
+    getFacilities(selectedId, {
+      onSuccess: (data) => {
+        hideLoader()
+        setFacilityData(data)
+      },
+      onError: (error) => {
+        hideLoader()
+      },
+    })
+  }
+  useEffect(() => {
+    if (
+      localStorage.getItem('OrganizationId') === undefined ||
+      localStorage.getItem('OrganizationId') === null
+    ) {
+      getAllFacilities()
     } else {
-      hideLoader()
+      return
     }
-  }, [isSuccess, isError, showLoader, hideLoader])
+  }, [])
   function saveHandler(handler) {
     showLoader()
     setTimeout(() => {
@@ -63,25 +88,14 @@ const Facilities = () => {
               title: 'Success',
               content: 'Facility Created Successfully',
             }))
-            // organizationData('', {
-            //   onSuccess: (data) => {
-            //     addData(data)
-            //   },
-            //   onError: (error) => {
-            //     setShowToast(() => ({
-            //       show: true,
-            //       title: 'Error',
-            //       content: error.response.data,
-            //     }))
-            //   },
-            // })
+            facilitiesDataFetch(localStorage.getItem('OrganizationId'))
           },
           onError: (error) => {
             hideLoader()
             setShowToast(() => ({
               show: true,
               title: 'Error',
-              content: error.response.data,
+              content: error.response.data.error,
               color: '#FF0000',
             }))
           },
@@ -97,25 +111,13 @@ const Facilities = () => {
                 title: 'Success',
                 content: 'Facility Edited Successfully',
               }))
-              // organizationData('', {
-              //   onSuccess: (data) => {
-              //     addData(data)
-              //   },
-              //   onError: (error) => {
-              //     setShowToast(() => ({
-              //       show: true,
-              //       title: 'Error',
-              //       content: error.response.data,
-              //     }))
-              //   },
-              // })
             },
             onError: (error) => {
               hideLoader()
               setShowToast(() => ({
                 show: true,
                 title: 'Error',
-                content: error.response.data,
+                content: error.response.data.error,
                 color: '#FF0000',
               }))
             },
@@ -157,8 +159,8 @@ const Facilities = () => {
             </CButton>
           </CCol>
         </CRow>
-        {data ? (
-          <GenericTable columns={columns} data={data} openEditModal={openEditModal} />
+        {facilityData ? (
+          <GenericTable columns={columns} data={facilityData} openEditModal={openEditModal} />
         ) : (
           <GlobalLoader />
         )}

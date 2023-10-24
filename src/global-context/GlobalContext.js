@@ -6,6 +6,7 @@ const GlobalContext = createContext()
 export const GlobalProvider = ({ children }) => {
   const [departmentId, setDepartmentId] = useState('')
   const [loading, setLoading] = useState(false)
+  const [facilityData, setFacilityData] = useState([])
   const [showToast, setShowToast] = useState({
     show: false,
     title: '',
@@ -22,6 +23,8 @@ export const GlobalProvider = ({ children }) => {
         setShowToast,
         loading,
         setLoading,
+        facilityData,
+        setFacilityData,
       }}
     >
       {children}

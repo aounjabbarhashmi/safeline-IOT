@@ -36,8 +36,6 @@ const Department = () => {
     setIsModalOpen(false)
   }
   const openEditModal = (data) => {
-    debugger
-    console.log(data)
     setIsAddMode(false)
     setEditData(data)
     setIsModalOpen(true)
