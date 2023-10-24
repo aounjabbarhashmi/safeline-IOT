@@ -36,7 +36,6 @@ const Department = () => {
     setIsModalOpen(false)
   }
   const openEditModal = (data) => {
-    debugger
     console.log(data)
     setIsAddMode(false)
     setEditData(data)
@@ -62,18 +61,6 @@ const Department = () => {
               title: 'Success',
               content: 'Department Created Successfully',
             }))
-            // organizationData('', {
-            //   onSuccess: (data) => {
-            //     addData(data)
-            //   },
-            //   onError: (error) => {
-            //     setShowToast(() => ({
-            //       show: true,
-            //       title: 'Error',
-            //       content: error.response.data,
-            //     }))
-            //   },
-            // })
           },
           onError: (error) => {
             hideLoader()
@@ -96,18 +83,6 @@ const Department = () => {
                 title: 'Success',
                 content: 'Department Edited Successfully',
               }))
-              // organizationData('', {
-              //   onSuccess: (data) => {
-              //     addData(data)
-              //   },
-              //   onError: (error) => {
-              //     setShowToast(() => ({
-              //       show: true,
-              //       title: 'Error',
-              //       content: error.response.data,
-              //     }))
-              //   },
-              // })
             },
             onError: (error) => {
               hideLoader()

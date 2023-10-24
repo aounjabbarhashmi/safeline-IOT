@@ -42,7 +42,6 @@ const AddDeviceForm = ({ closeModal, saveHandler, data }) => {
     active: true,
   })
   useEffect(() => {
-    debugger
     if (data) {
       setFormData(() => ({
         name: data.name,

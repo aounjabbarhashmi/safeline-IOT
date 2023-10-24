@@ -41,7 +41,6 @@ const AddDepartmentForm = ({ closeModal, saveHandler, data }) => {
     systemId: 31,
   })
   useEffect(() => {
-    debugger
     if (data) {
       setFormData(() => ({
         name: data.name,

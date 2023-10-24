@@ -1,9 +1,16 @@
 import { CButton, CCard, CCol, CRow } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
+import { useMutation } from 'react-query'
 import GlobalLoader from 'src/components/global-loader/GlobalLoader'
 import { GenericModal } from 'src/components/modal/GenericModal'
+import { useGlobalInfo } from 'src/global-context/GlobalContext'
 import { useLoader } from 'src/global-context/LoaderContext'
-import { useAllOrgDevicesData } from 'src/hooks/useOrganizationDevices'
+import {
+  useAllOrgDevicesData,
+  EditOrganizationSensor,
+  addOrganizationSensor,
+} from 'src/hooks/useOrganizationDevices'
+import AddOrganizationSensor from 'src/views/forms/add-organization-sensor/add-organization-sensor'
 import GenericTable from 'src/views/table/GenericTable'
 const columns = [
   { key: 'sensorId', label: 'Sensor ID' },
@@ -12,9 +19,12 @@ const columns = [
 
 const OrganizationSensor = () => {
   const { data, isSuccess, isError } = useAllOrgDevicesData()
+  const { mutate: OrganizationSensorAdd } = useMutation(addOrganizationSensor)
+  const { mutate: OrganizationSensorEdit } = useMutation(EditOrganizationSensor)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editData, setEditData] = useState()
   const [isAddMode, setIsAddMode] = useState(false)
+  const { setShowToast } = useGlobalInfo()
   const { dispatch } = useLoader()
   const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
   const hideLoader = () => dispatch({ type: 'HIDE_LOADER' })
@@ -38,11 +48,94 @@ const OrganizationSensor = () => {
       hideLoader()
     }
   }, [isSuccess, isError, showLoader, hideLoader])
+  function saveHandler(handler) {
+    showLoader()
+    setTimeout(() => {
+      if (isAddMode) {
+        OrganizationSensorAdd(handler, {
+          onSuccess: () => {
+            hideLoader()
+            setShowToast(() => ({
+              show: true,
+              title: 'Success',
+              content: 'Device Created Successfully',
+            }))
+            // organizationData('', {
+            //   onSuccess: (data) => {
+            //     addData(data)
+            //   },
+            //   onError: (error) => {
+            //     setShowToast(() => ({
+            //       show: true,
+            //       title: 'Error',
+            //       content: error.response.data,
+            //     }))
+            //   },
+            // })
+          },
+          onError: (error) => {
+            hideLoader()
+            setShowToast(() => ({
+              show: true,
+              title: 'Error',
+              content: error?.response?.data?.title || '',
+              color: '#FF0000',
+            }))
+          },
+        })
+      } else {
+        OrganizationSensorEdit(
+          { handler, editData },
+          {
+            onSuccess: () => {
+              hideLoader()
+              setShowToast(() => ({
+                show: true,
+                title: 'Success',
+                content: 'Device Edited Successfully',
+              }))
+              // organizationData('', {
+              //   onSuccess: (data) => {
+              //     addData(data)
+              //   },
+              //   onError: (error) => {
+              //     setShowToast(() => ({
+              //       show: true,
+              //       title: 'Error',
+              //       content: error.response.data,
+              //     }))
+              //   },
+              // })
+            },
+            onError: (error) => {
+              hideLoader()
+              setShowToast(() => ({
+                show: true,
+                title: 'Error',
+                content: error.response.data,
+                color: '#FF0000',
+              }))
+            },
+          },
+        )
+      }
+    }, 0)
+  }
   return (
     <>
       <GenericModal
         title={isAddMode ? 'Add Organization sensor' : 'Edit Organization sensor'}
-        content="This is the modal content."
+        content={
+          isAddMode ? (
+            <AddOrganizationSensor closeModal={closeModal} saveHandler={saveHandler} />
+          ) : (
+            <AddOrganizationSensor
+              closeModal={closeModal}
+              saveHandler={saveHandler}
+              data={editData}
+            />
+          )
+        }
         isOpen={isModalOpen}
         onClose={closeModal}
       />
