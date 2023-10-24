@@ -47,7 +47,7 @@ const AddFacilityFrom = ({ closeModal, saveHandler, data }) => {
         systemName: data.systemName,
         systemType: data.systemType,
         organizationId: 33,
-        timezone: data.timeZone,
+        timezone: data.timezone,
         currency: data.currency,
         siteManager: data.siteManager,
         contact: data.contact,
