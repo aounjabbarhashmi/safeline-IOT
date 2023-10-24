@@ -116,21 +116,21 @@ const AddFacilityFrom = () => {
     {/* Organization */}
     <CCol md={12}>
       <CFormLabel htmlFor="validationOrganization">Organizations* </CFormLabel>
-      <CInputGroup className="has-validation">
-        <CInputGroupText>
-         {/*} <CIcon icon={cilPaperPlane} alt="Organization" />*/}
-        </CInputGroupText>
-        <CFormInput
-          type="text"
-          name="organizations"
-          value={formData.organizations}
-          onChange={handleInputChange}
-          aria-describedby="inputGroupPrependFeedback"
-          feedbackInvalid="Facility Name is required"
-          id="validationOrganizations"
-          required
-        />
-      </CInputGroup>
+      <CFormSelect
+      name='organization'
+      value={formData.organizations}
+      onChange={handleInputChange}
+        aria-describedby="validationCustom04Feedback"
+        feedbackInvalid="Please select a valid organization."
+        id="validationOrganizations"
+        required
+      >
+        <option ></option>
+        <option>Arial bl</option>
+        <option>Blue re</option>
+        <option>Green re</option>
+        <option>Red spr</option>
+      </CFormSelect>
     </CCol>
         {/* Time zone*/}
        {/*} <CFormLabel htmlFor="validationTimeZone">Time Zone*</CFormLabel>*/}

@@ -1,8 +1,8 @@
 import React from 'react'
-import AddDeviceSensor from 'src/views/forms/add-device-sensors/add-device-sensor'
+import AddSensorConfigration from 'src/views/forms/add-sensor-configration/add-sensor-configration'
 const OrganizationSensor = () => {
   return <div>
-    <AddDeviceSensor/>
+    <AddSensorConfigration/>
   </div>
 }
 
