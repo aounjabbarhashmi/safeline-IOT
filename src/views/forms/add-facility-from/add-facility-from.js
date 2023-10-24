@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   CButton,
@@ -21,7 +21,7 @@ import {
 } from '@coreui/icons'
 import { useLoader } from 'src/global-context/LoaderContext'
 
-const AddFacilityFrom = ({ closeModal, saveHandler }) => {
+const AddFacilityFrom = ({ closeModal, saveHandler, data }) => {
   const { dispatch } = useLoader()
   const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
   const [validated, setValidated] = useState(false)
@@ -41,6 +41,26 @@ const AddFacilityFrom = ({ closeModal, saveHandler }) => {
     latitude: '',
     longitude: '',
   })
+  useEffect(() => {
+    if (data) {
+      setFormData(() => ({
+        systemName: data.systemName,
+        systemType: data.systemType,
+        organizationId: 33,
+        timezone: data.timeZone,
+        currency: data.currency,
+        siteManager: data.siteManager,
+        contact: data.contact,
+        contactEmail: data.contactEmail,
+        address: data.address,
+        city: data.city,
+        street: data.street,
+        postCode: data.postcode,
+        latitude: data.latitude,
+        longitude: data.longitude,
+      }))
+    }
+  }, [data])
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
     setFormData({
@@ -356,6 +376,21 @@ const AddFacilityFrom = ({ closeModal, saveHandler }) => {
 AddFacilityFrom.propTypes = {
   closeModal: PropTypes.func.isRequired,
   saveHandler: PropTypes.func.isRequired,
+  data: PropTypes.shape({
+    systemName: PropTypes.string,
+    systemType: PropTypes.string,
+    timezone: PropTypes.string,
+    currency: PropTypes.string,
+    siteManager: PropTypes.string,
+    contact: PropTypes.string,
+    contactEmail: PropTypes.string,
+    address: PropTypes.string,
+    city: PropTypes.string,
+    street: PropTypes.string,
+    postcode: PropTypes.string,
+    latitude: PropTypes.string,
+    longitude: PropTypes.string,
+  }),
 }
 
 export default AddFacilityFrom
