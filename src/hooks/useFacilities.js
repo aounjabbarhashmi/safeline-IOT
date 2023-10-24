@@ -11,3 +11,8 @@ export const getAllFacilitiesData = async (dispatch) => {
 export function useAllFacilitiesData(dispatch) {
   return useQuery(['repos', dispatch], getAllFacilitiesData)
 }
+
+export const addFacility = async (payload) => {
+  const { data } = await axiosInstance.post(`System/CreateNewSystem`, payload)
+  return data
+}

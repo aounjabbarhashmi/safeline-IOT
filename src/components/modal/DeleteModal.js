@@ -1,31 +1,36 @@
 /* eslint-disable react/prop-types */
-import { CModal, CModalBody, CModalHeader, CModalTitle } from '@coreui/react'
+import { CButton, CCol, CModal, CModalBody, CModalHeader, CModalTitle } from '@coreui/react'
 import React from 'react'
-export const GenericModal = ({ title, content, onClose, isOpen }) => {
+export const DeleteModal = ({ title, content, onClose, isOpen, deleteOrg, id }) => {
   return (
     <CModal visible={isOpen} onClose={onClose}>
       <CModalHeader closeButton>
         <CModalTitle>{title}</CModalTitle>
       </CModalHeader>
       <CModalBody>{content}</CModalBody>
-      {/* <CModalFooter>
+      <h4 className="ms-3">Are you sure you want to delete? </h4>
+
+      <CCol xs={11} className="mb-3">
+        <CButton
+          color="danger"
+          className="float-end ms-2"
+          onClick={() => {
+            deleteOrg(id)
+            onClose()
+          }}
+        >
+          Delete
+        </CButton>
         <CButton
           color="primary"
+          className="float-end"
           onClick={() => {
             onClose()
           }}
         >
-          Add Organization
+          Cancel
         </CButton>
-        <CButton
-          color="secondary"
-          onClick={() => {
-            onClose()
-          }}
-        >
-          Close
-        </CButton>
-      </CModalFooter> */}
+      </CCol>
     </CModal>
   )
 }

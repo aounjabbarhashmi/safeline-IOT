@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
-import React, { Component, Suspense } from 'react'
+import React, { Component, Suspense, useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './scss/style.scss'
+import GenericToast from './views/toast/GenericToast'
+import { useGlobalInfo } from './global-context/GlobalContext'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -18,21 +20,37 @@ const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 
 const App = () => {
+  const { showToast, setShowToast } = useGlobalInfo()
+  const toggleToast = () => {
+    setShowToast((prev) => ({
+      ...prev,
+      show: !showToast.show,
+    }))
+  }
   return (
-    <BrowserRouter>
-      <Suspense fallback={loading}>
-        <Routes>
-          {/* Public Routes */}
-          <Route exact path="/login" element={<Login />} />
-          <Route exact path="/register" element={<Register />} />
-          <Route exact path="/404" element={<Page404 />} />
-          <Route exact path="/500" element={<Page500 />} />
+    <>
+      <GenericToast
+        visible={showToast.show}
+        onClose={toggleToast}
+        title={showToast.title}
+        content={showToast.content}
+        color={showToast.color}
+      />
+      <BrowserRouter>
+        <Suspense fallback={loading}>
+          <Routes>
+            {/* Public Routes */}
+            <Route exact path="/login" element={<Login />} />
+            <Route exact path="/register" element={<Register />} />
+            <Route exact path="/404" element={<Page404 />} />
+            <Route exact path="/500" element={<Page500 />} />
 
-          {/* Private Routes */}
-          <Route path="*" element={<PrivateRoute path="*" element={<DefaultLayout />} />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+            {/* Private Routes */}
+            <Route path="*" element={<PrivateRoute path="*" element={<DefaultLayout />} />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </>
   )
 }
 
