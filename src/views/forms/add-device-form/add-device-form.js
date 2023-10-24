@@ -178,6 +178,7 @@ AddDeviceForm.propTypes = {
   saveHandler: PropTypes.func.isRequired,
   data: PropTypes.shape({
     deviceName: PropTypes.string,
+    name: PropTypes.string,
     manufacturerName: PropTypes.string,
     facilities: PropTypes.string,
     department: PropTypes.string,
