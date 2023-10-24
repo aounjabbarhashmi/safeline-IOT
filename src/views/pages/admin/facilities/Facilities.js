@@ -6,7 +6,13 @@ import { GenericModal } from 'src/components/modal/GenericModal'
 import { useLoader } from 'src/global-context/LoaderContext'
 import { useMutation } from 'react-query'
 import { useGlobalInfo } from 'src/global-context/GlobalContext'
-import { addFacility, EditFacility, getAllFacilitiesData } from 'src/hooks/useFacilities'
+import {
+  useAllFacilitiesData,
+  addFacility,
+  EditFacility,
+  deleteFacility,
+  getAllFacilitiesData,
+} from 'src/hooks/useFacilities'
 import AddFacilityFrom from 'src/views/forms/add-facility-from/add-facility-from'
 import GenericTable from 'src/views/table/GenericTable'
 import { getFacilitiesData } from 'src/hooks/useAuth'
@@ -33,11 +39,49 @@ const Facilities = () => {
   const [editData, setEditData] = useState()
   const [isAddMode, setIsAddMode] = useState(false)
   const { setShowToast } = useGlobalInfo()
+  const deleteFacilityById = useMutation(deleteFacility)
+
   const openModal = () => {
     setIsModalOpen(true)
   }
   const closeModal = () => {
     setIsModalOpen(false)
+  }
+
+  /**
+   * Deletes a Fecility by its ID.
+   * @param {number} facilityId - The ID of the Facility to be deleted.
+   */
+  const deleteFacilities = (facilityId) => {
+    showLoader()
+    deleteFacilityById.mutate(facilityId, {
+      onSuccess: () => {
+        setShowToast(() => ({
+          show: true,
+          title: 'Success',
+          content: 'Facility deleted Successfully',
+        }))
+        if (
+          localStorage.getItem('OrganizationId') === null ||
+          localStorage.getItem('OrgnaizationId') === undefined
+        ) {
+          getAllFacilities()
+        } else {
+          facilitiesDataFetch(localStorage.getItem('OrganizationId'))
+        }
+        // refetchFacilities()
+        hideLoader()
+      },
+      onError: (error) => {
+        setShowToast(() => ({
+          show: true,
+          title: 'Error',
+          content: error.response.data.error,
+        }))
+        hideLoader()
+      },
+    })
+    hideLoader()
   }
   const openEditModal = (data) => {
     console.log(data)
@@ -160,7 +204,12 @@ const Facilities = () => {
           </CCol>
         </CRow>
         {facilityData ? (
-          <GenericTable columns={columns} data={facilityData} openEditModal={openEditModal} />
+          <GenericTable
+            columns={columns}
+            OnDeleteItem={deleteFacilities}
+            data={facilityData}
+            openEditModal={openEditModal}
+          />
         ) : (
           <GlobalLoader />
         )}

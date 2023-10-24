@@ -178,6 +178,7 @@ AddDeviceForm.propTypes = {
   data: PropTypes.shape({
     name: PropTypes.string,
     deviceName: PropTypes.string,
+    name: PropTypes.string,
     manufacturerName: PropTypes.string,
     facilities: PropTypes.string,
     department: PropTypes.string,
