@@ -127,6 +127,18 @@ const Organization = () => {
                 title: 'Success',
                 content: 'Organization Edited Successfully',
               }))
+              organizationData('', {
+                onSuccess: (data) => {
+                  addData(data)
+                },
+                onError: (error) => {
+                  setShowToast(() => ({
+                    show: true,
+                    title: 'Error',
+                    content: error.response.data,
+                  }))
+                },
+              })
             },
             onError: (error) => {
               hideLoader()

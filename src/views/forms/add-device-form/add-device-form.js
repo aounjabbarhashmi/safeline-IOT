@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import {
   CButton,
   CCol,
@@ -27,15 +28,30 @@ import {
   cilSignalCellular0,
   cilTerminal,
 } from '@coreui/icons'
+import { useLoader } from 'src/global-context/LoaderContext'
 
-const AddDeviceForm = () => {
-    const [validated, setValidated] = useState(false)
+const AddDeviceForm = ({ closeModal, saveHandler, data }) => {
+  const [validated, setValidated] = useState(false)
+  const { dispatch } = useLoader()
+  const showLoader = () => dispatch({ type: 'SHOW_LOADER' })
   const [formData, setFormData] = useState({
-    deviceName: '',
-    manufacturerName:'',
-    facilities:'',
-    department:''
+    name: '',
+    manufacturer: '',
+    facilities: '',
+    departmentId: 55,
+    active: true,
   })
+  useEffect(() => {
+    debugger
+    if (data) {
+      setFormData(() => ({
+        name: data.name,
+        manufacturer: data.manufacturer,
+        facilities: data.facilities,
+        departmentId: data.system.systemName,
+      }))
+    }
+  }, [data])
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
     setFormData({
@@ -57,108 +73,119 @@ const AddDeviceForm = () => {
     // Handle form submission here
     if (form.checkValidity() === true) {
       console.log('Form is valid, submit data:', formData)
+      showLoader()
+      saveHandler(formData)
       event.preventDefault()
+      closeModal()
     }
   }
 
-
-
   return (
-       <CForm
-    className="row g-3 needs-validation"
-    noValidate
-    validated={validated}
-    onSubmit={handleSubmit}
-  >
-    {/* Device Name */}
-    <CCol md={12}>
-      <CFormLabel htmlFor="validationDevicetName">Device Name*</CFormLabel>
-      <CInputGroup>
-        <CInputGroupText>
-          <CIcon icon={cilBuilding} alt="Name" />
-        </CInputGroupText>
-        <CFormInput
-          type="text"
-          name="deviceName"
-          value={formData.deviceName}
+    <CForm
+      className="row g-3 needs-validation"
+      noValidate
+      validated={validated}
+      onSubmit={handleSubmit}
+    >
+      {/* Device Name */}
+      <CCol md={12}>
+        <CFormLabel htmlFor="validationDevicetName">Device Name*</CFormLabel>
+        <CInputGroup>
+          <CInputGroupText>
+            <CIcon icon={cilBuilding} alt="Name" />
+          </CInputGroupText>
+          <CFormInput
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            feedbackInvalid="Device Name is required"
+            id="validationDeviceName"
+            required
+          />
+        </CInputGroup>
+      </CCol>
+
+      {/* Manufacturer Name */}
+      <CCol md={12}>
+        <CFormLabel htmlFor="validationManufacturerName">Manufacturer Name*</CFormLabel>
+        <CInputGroup>
+          <CInputGroupText>
+            <CIcon icon={cilSignalCellular0} alt="Name" />
+          </CInputGroupText>
+          <CFormInput
+            type="text"
+            name="manufacturer"
+            value={formData.manufacturer}
+            onChange={handleInputChange}
+            feedbackInvalid="Manufacturer Name is required"
+            id="validationManufacturerName"
+            required
+          />
+        </CInputGroup>
+      </CCol>
+
+      {/* Facilities */}
+      <CCol md={12}>
+        {/* Form select*/}
+        <CFormLabel htmlFor="validationFacilities">Facilities*</CFormLabel>
+        <CFormSelect
+          aria-describedby="validationCustom04Feedback"
+          feedbackInvalid="Please select valid facilities."
+          id="validationFacilities"
+          name="facilities"
+          value={formData.facilities}
           onChange={handleInputChange}
-          feedbackInvalid="Device Name is required"
-          id="validationDeviceName"
           required
-        />
-      </CInputGroup>
-    </CCol>
+        >
+          <option>Choose...</option>
+          <option>Lahore City</option>
+          <optio>Karachi City</optio>
+          <option>Murre City</option>
+        </CFormSelect>
+      </CCol>
 
-    {/* Manufacturer Name */}
-    <CCol md={12}>
-      <CFormLabel htmlFor="validationManufacturerName">Manufacturer Name*</CFormLabel>
-      <CInputGroup>
-        <CInputGroupText>
-          <CIcon icon={cilSignalCellular0} alt="Name" />
-        </CInputGroupText>
-        <CFormInput
-          type="text"
-          name="manufacturerName"
-          value={formData.manufacturerName}
+      {/*Department Selection */}
+      <CCol md={12}>
+        {/* Form select*/}
+        <CFormLabel htmlFor="validationFacilities">Department Selection**</CFormLabel>
+        <CFormSelect
+          aria-describedby="validationCustom04Feedback"
+          feedbackInvalid="Please select valid department."
+          id="validationDepartment"
+          name="department"
+          value={formData.department}
           onChange={handleInputChange}
-          feedbackInvalid="Manufacturer Name is required"
-          id="validationManufacturerName"
           required
-        />
-      </CInputGroup>
-    </CCol>
-
-
-{/* Facilities */}
-<CCol md={12}>
-      {/* Form select*/}
-      <CFormLabel htmlFor="validationFacilities">Facilities*</CFormLabel>
-      <CFormSelect
-        aria-describedby="validationCustom04Feedback"
-        feedbackInvalid="Please select valid facilities."
-        id="validationFacilities"
-        name='facilities'
-        value={formData.facilities}
-        onChange={handleInputChange}
-        required
-      >
-        <option >Choose...</option>
-        <option>Lahore City</option>
-        <optio>Karachi City</optio>
-        <option>Murre City</option>
-      </CFormSelect>
-</CCol>
-    
-
-   {/*Department Selection */}
-<CCol md={12}>
-      {/* Form select*/}
-      <CFormLabel htmlFor="validationFacilities">Department Selection**</CFormLabel>
-      <CFormSelect
-        aria-describedby="validationCustom04Feedback"
-        feedbackInvalid="Please select valid department."
-        id="validationDepartment"
-        name='department'
-        value={formData.department}
-        onChange={handleInputChange}
-        required
-      >
-        <option >Choose...</option>
-        <option>Lahore City</option>
-        <optio>Karachi City</optio>
-        <option>Murre City</option>
-      </CFormSelect>
-</CCol>
- {/* Submit Button */}
- <CCol xs={12}>
-      <CButton color="primary" type="submit">
-        Submit form
-      </CButton>
-    </CCol>
-
+        >
+          <option>Choose...</option>
+          <option>Lahore City</option>
+          <optio>Karachi City</optio>
+          <option>Murre City</option>
+        </CFormSelect>
+      </CCol>
+      {/* Submit Button */}
+      <CCol xs={12}>
+        <CButton color="primary" type="submit">
+          Submit form
+        </CButton>
+      </CCol>
     </CForm>
-
   )
+}
+AddDeviceForm.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  saveHandler: PropTypes.func.isRequired,
+  data: PropTypes.shape({
+    deviceName: PropTypes.string,
+    manufacturerName: PropTypes.string,
+    facilities: PropTypes.string,
+    department: PropTypes.string,
+    manufacturer: PropTypes.string, // Added manufacturer validation
+    system: PropTypes.shape({
+      systemName: PropTypes.string, // Added system and systemName validation
+    }),
+  }),
 }
 
 export default AddDeviceForm

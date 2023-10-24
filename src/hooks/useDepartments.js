@@ -20,3 +20,12 @@ export const addDepartment = async (payload) => {
   const { data } = await axiosInstance.post(`Department/CreateDepartment`, payload)
   return data
 }
+export const EditDepartment = async (payload) => {
+  setAuthenticationToken(localStorage.getItem('token'))
+  debugger
+  const { data } = await axiosInstance.patch(
+    `Department/UpdateDepartment?Id=${payload.editData.id}`,
+    payload.handler,
+  )
+  return data
+}

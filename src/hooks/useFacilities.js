@@ -16,3 +16,8 @@ export const addFacility = async (payload) => {
   const { data } = await axiosInstance.post(`System/CreateNewSystem`, payload)
   return data
 }
+export const EditFacility = async (payload) => {
+  setAuthenticationToken(localStorage.getItem('token'))
+  const { data } = await axiosInstance.patch(`System/${payload.editData.id}`, payload.handler)
+  return data
+}
