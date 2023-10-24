@@ -183,6 +183,7 @@ AddDepartmentForm.propTypes = {
     contactEmail: PropTypes.string,
     description: PropTypes.string,
     facility: PropTypes.string,
+    system: PropTypes.string,
     organizationId: PropTypes.number,
     systemId: PropTypes.number,
   }),
